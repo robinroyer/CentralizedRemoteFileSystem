@@ -1,6 +1,10 @@
 .DS_Strore
 .password
-cloud.key
-notes_tp1.txt
+
 *.jar
 */bin/*
+
+cloud.key
+notes_tp1.txt
+
+*.ppk
