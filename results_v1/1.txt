@@ -1,60 +1,39 @@
 Temps ecoule appel normal: 9157 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 2876402 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 7297419 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 727 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1099498 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 4748369 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 799 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1047505 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 5794486 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 591 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1283372 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 5410712 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 579 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1169349 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 7379612 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 653 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 982611 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 7203762 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 1132 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1581788 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 6665955 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 596 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1068961 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 4249855 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 604 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1407731 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 8759013 ns
-Resultat appel RMI distant: 11
+
 Temps ecoule appel normal: 920 ns
-Resultat appel normal: 11
 Temps ecoule appel RMI local: 1933119 ns
-Resultat appel RMI local: 11
 Temps ecoule appel RMI distant: 9199781 ns
-Resultat appel RMI distant: 11
