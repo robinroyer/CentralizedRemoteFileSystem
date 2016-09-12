@@ -1,0 +1,41 @@
+Erreur: Le nom  server  n est pas defini dans le registre.
+Temps ecoule appel normal: 2446 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 3051421 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 416 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2338364 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 365 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2263890 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 369 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2448284 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 766 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2465743 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 573 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2239845 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 393 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2175924 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 387 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2238022 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 356 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2309211 ns
+Resultat appel RMI distant: 11
+Temps ecoule appel normal: 526 ns
+Resultat appel normal: 11
+Temps ecoule appel RMI distant: 2285293 ns
+Resultat appel RMI distant: 11
