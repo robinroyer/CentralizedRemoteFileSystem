@@ -1,41 +1,60 @@
-Erreur: Le nom  server  n est pas defini dans le registre.
-Temps ecoule appel normal: 2791 ns
+Temps ecoule appel normal: 5280 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 88488571 ns
+Temps ecoule appel RMI local: 4465453 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 176930978 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 718 ns
+Temps ecoule appel normal: 1138 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87578073 ns
+Temps ecoule appel RMI local: 4530491 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 111887154 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 383 ns
+Temps ecoule appel normal: 792 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87486293 ns
+Temps ecoule appel RMI local: 2540288 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 101952835 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 352 ns
+Temps ecoule appel normal: 1300 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87614966 ns
+Temps ecoule appel RMI local: 3773146 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 96736211 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 356 ns
+Temps ecoule appel normal: 1195 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87582508 ns
+Temps ecoule appel RMI local: 2612567 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 96151918 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 369 ns
+Temps ecoule appel normal: 750 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87448205 ns
+Temps ecoule appel RMI local: 3361102 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 92283429 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 564 ns
+Temps ecoule appel normal: 1162 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87547733 ns
+Temps ecoule appel RMI local: 4209221 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 112209743 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 483 ns
+Temps ecoule appel normal: 977 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87478746 ns
+Temps ecoule appel RMI local: 3398780 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 98536465 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 467 ns
+Temps ecoule appel normal: 1348 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87731481 ns
+Temps ecoule appel RMI local: 3544650 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 84355376 ns
 Resultat appel RMI distant: 11
-Temps ecoule appel normal: 651 ns
+Temps ecoule appel normal: 1098 ns
 Resultat appel normal: 11
-Temps ecoule appel RMI distant: 87421810 ns
+Temps ecoule appel RMI local: 3819034 ns
+Resultat appel RMI local: 11
+Temps ecoule appel RMI distant: 111191748 ns
 Resultat appel RMI distant: 11
