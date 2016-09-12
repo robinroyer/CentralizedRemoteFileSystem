@@ -60,7 +60,7 @@ public class Client {
 			stub = (ServerInterface) registry.lookup("server");
 		} catch (NotBoundException e) {
 			System.out.println("Erreur: Le nom '" + e.getMessage()
-					+ "' n'est pas défini dans le registre.");
+					+ "' nest pas dfini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -75,9 +75,9 @@ public class Client {
 		int result = localServer.execute(4, 7);
 		long end = System.nanoTime();
 
-		System.out.println("Temps écoulé appel normal: " + (end - start)
+		System.out.println("Temps cou appel normal: " + (end - start)
 				+ " ns");
-		System.out.println("Résultat appel normal: " + result);
+		System.out.println("Rsultat appel normal: " + result);
 	}
 
 	private void appelRMILocal() {
@@ -86,9 +86,9 @@ public class Client {
 			int result = localServerStub.execute(4, 7);
 			long end = System.nanoTime();
 
-			System.out.println("Temps écoulé appel RMI local: " + (end - start)
+			System.out.println("Temps oul appel RMI local: " + (end - start)
 					+ " ns");
-			System.out.println("Résultat appel RMI local: " + result);
+			System.out.println("Rsultat appel RMI local: " + result);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}
@@ -100,9 +100,9 @@ public class Client {
 			int result = distantServerStub.execute(4, 7);
 			long end = System.nanoTime();
 
-			System.out.println("Temps écoulé appel RMI distant: "
+			System.out.println("Temps coul appel RMI distant: "
 					+ (end - start) + " ns");
-			System.out.println("Résultat appel RMI distant: " + result);
+			System.out.println("Rsultat appel RMI distant: " + result);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}

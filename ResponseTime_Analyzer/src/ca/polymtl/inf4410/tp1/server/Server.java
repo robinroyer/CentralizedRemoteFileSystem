@@ -33,7 +33,7 @@ public class Server implements ServerInterface {
 			System.out.println("Server ready.");
 		} catch (ConnectException e) {
 			System.err
-					.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancé ?");
+					.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancee");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -42,8 +42,8 @@ public class Server implements ServerInterface {
 	}
 
 	/*
-	 * Méthode accessible par RMI. Additionne les deux nombres passés en
-	 * paramètre.
+	 * Mthode accessible par RMI. Additionne les deux nombres passs en
+	 * paramtre.
 	 */
 	@Override
 	public int execute(int a, int b) throws RemoteException {
