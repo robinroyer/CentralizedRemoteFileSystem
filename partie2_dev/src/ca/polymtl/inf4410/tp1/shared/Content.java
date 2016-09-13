@@ -63,11 +63,4 @@ public class Content {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/**
-	 * Update the checksum of the file, has to be done after an update of the content
-	 */
-	private void updateChecksum() 
-	{		setChecksum(calculateChecksum(this.content));
-	}
 }

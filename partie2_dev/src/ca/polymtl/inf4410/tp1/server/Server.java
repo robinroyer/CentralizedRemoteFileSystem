@@ -7,7 +7,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;

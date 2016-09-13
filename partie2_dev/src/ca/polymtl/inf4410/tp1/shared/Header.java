@@ -64,4 +64,13 @@ public class Header {
 	public void setLock(boolean lock) {
 		this.lock = lock;
 	}
+	
+	@Override
+	public String toString() {
+		String display = name;
+		if(lock) {
+			display += "\t - Vérouillé par client " + owner;
+		}
+		return display += "\t - Non vérouillé";
+	}
 }

@@ -5,7 +5,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 
+import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
 public class Client {
@@ -17,42 +19,43 @@ public class Client {
 		Client client = new Client(REMOTE_SERVER_IP);
 
 		String action = args[0];
-		String filename = args[1];
+		String filename = "";
 
 		// TODO: Vérification des arguments
-		// TODO: Modification architecture pour run ? Surement moyen de faire plus propre
+		// TODO: Modification architecture pour run ? Surement moyen de faire
+		// plus propre
 		// et plus court !
 		switch (action) {
-			case "create":
-				filename = checkFirstArgument(args);
-				client.createFile(filename);
-				break;
-			case "list":
-				client.displayList();
-				break;
-			case "syncLocalDir":
-				client.synchroLocalDirectory();
-				break;
-			case "get":
-				filename = checkFirstArgument(args);
-				client.getFile(filename);
-				break;
-			case "lock":
-				filename = checkFirstArgument(args);
-				client.lockFile(filename);
-				break;
-			case "push":
-				filename = checkFirstArgument(args);
-				client.pushFile(filename);
-				break;
+		case "create":
+			filename = checkFirstArgument(args);
+			client.createFile(filename);
+			break;
+		case "list":
+			client.displayList();
+			break;
+		case "syncLocalDir":
+			client.synchroLocalDirectory();
+			break;
+		case "get":
+			filename = checkFirstArgument(args);
+			client.getFile(filename);
+			break;
+		case "lock":
+			filename = checkFirstArgument(args);
+			client.lockFile(filename);
+			break;
+		case "push":
+			filename = checkFirstArgument(args);
+			client.pushFile(filename);
+			break;
 		}
 	}
 
-		private static String checkFirstArgument(String[] args) {
+	private static String checkFirstArgument(String[] args) {
 		String fileName = args[1];
 		try {
-			if (fileName == null)
-			{	throw new IllegalArgumentException();
+			if (fileName == null) {
+				throw new IllegalArgumentException();
 			}
 		} catch (IllegalArgumentException e) {
 			System.err.println("Invalid argument: please check readme.txt");
@@ -110,33 +113,35 @@ public class Client {
 			System.out.println("Erreur: " + e.getMessage());
 		}
 	}
-	
-	private void displayList() 
-	{
+
+	private void displayList() {
 		try {
-			distantServerStub.list();
+			ArrayList<Header> list = distantServerStub.list();
+			for (Header h : list) {
+				System.out.println(h);
+			}
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
-		}	
+		}
 	}
-	
+
 	private void pushFile(String filename) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void lockFile(String filename) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void getFile(String filename) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void synchroLocalDirectory() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
