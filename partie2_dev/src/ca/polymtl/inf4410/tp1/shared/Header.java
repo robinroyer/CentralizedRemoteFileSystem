@@ -69,8 +69,8 @@ public class Header {
 	public String toString() {
 		String display = name;
 		if(lock) {
-			display += "\t - Vérouillé par client " + owner;
+			display += "\t - Verouille par client " + owner;
 		}
-		return display += "\t - Non vérouillé";
+		return display += "\t - Non verouille";
 	}
 }

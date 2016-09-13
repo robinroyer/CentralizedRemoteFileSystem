@@ -21,7 +21,7 @@ public class Client {
 		String action = args[0];
 		String filename = "";
 
-		// TODO: Vérification des arguments
+		// TODO: Verification des arguments
 		// TODO: Modification architecture pour run ? Surement moyen de faire
 		// plus propre
 		// et plus court !

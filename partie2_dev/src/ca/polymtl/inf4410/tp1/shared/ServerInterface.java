@@ -5,10 +5,10 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public interface ServerInterface extends Remote {
-	// Méthodes implémentées pour la partie 1 
+	// Methodes implementees pour la partie 1 
 	void print(String message) throws RemoteException;
 	
-	// Méthodes implémentées pour la partie 2
+	// Methodes implementees pour la partie 2
 	int generateClientId() throws RemoteException;
 	boolean create(String name) throws RemoteException;
 	ArrayList<Header> list() throws RemoteException;
