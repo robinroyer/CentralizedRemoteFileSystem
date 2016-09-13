@@ -12,6 +12,7 @@ import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
 public class Client {
 
+	private static final String FILE_PATH= "~/.user";
 	private static String REMOTE_SERVER_IP = "132.207.12.200";
 	private ServerInterface distantServerStub = null;
 
@@ -144,5 +145,55 @@ public class Client {
 			System.err.println("Invalid argument: please check readme.txt");
 		}
 		return fileName;
+	}
+
+	private Integer getUserId() {
+
+		Integer id = new Integer(-1);
+		try{
+			File f = new File ("textfile");
+		    FileReader fr = new FileReader (f);
+		    BufferedReader br = new BufferedReader (fr);
+		    String line = br.readLine();
+	 		line = line.substring(line.lastIndexOf("=")).trim();
+
+	        br.close();
+	        fr.close();
+
+
+			if (!line.isEmpty()) {
+				id = Integer.parseInt(line);
+			}
+			else{
+				id = new Integer(distantServerStub.generateClientId());
+				storeUserId(id);
+			}
+		}
+		catch(FileNotFoundException exception){
+			System.out.println ("Le fichier n'a pas été trouvé");
+			id = new Integer(distantServerStub.generateClientId());
+			storeUserId(id);
+		}
+		catch (RemoteException e) {
+			System.out.println("Erreur: " + e.getMessage());
+		}
+		catch (IOException exception){
+	        System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
+	    }
+	    catch(NumberFormatException e){
+	        System.out.println ("Fichier d'id corrompu : " + exception.getMessage());
+	    }
+
+		return id;
+	}
+
+	private void storeUserId(Integer id) {
+
+		String stringToStore = "id="+ id;
+
+		File userFile = new File(FILE_PATH);
+		FileWriter userFileWritter = new FileWriter(userFile, false);
+		userFileWritter.write(stringToStore);
+		userFileWritter.close();
 	}
 }
