@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import ca.polymtl.inf4410.tp1.shared.File;
+import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
 public class Server implements ServerInterface {
@@ -19,13 +20,17 @@ public class Server implements ServerInterface {
 		server.run();
 	}
 	
-	private List<Integer> clientsId;
+	private ArrayList<Integer> clientsId;
 	private HashMap<String, Integer> filesLockers;
+	private ArrayList<File> fileList;
+	private ArrayList<Header> headerList;
 
 	public Server() {
 		super();
 		clientsId = new ArrayList<Integer>();
 		filesLockers = new HashMap<String, Integer>();
+		fileList = new ArrayList<File>();
+		headerList = new ArrayList<Header>();
 	}
 
 	private void run() {
@@ -50,23 +55,9 @@ public class Server implements ServerInterface {
 		}
 	}
 
-	/*
-	 * Methode accessible par RMI. Additionne les deux nombres passes en
-	 * parametre.
-	 */
-	@Override
-	public int execute(int a, int b) throws RemoteException {
-		return a + b;
-	}
-
 	@Override
 	public void print(String message) throws RemoteException {
 		System.out.println(message);	
-	}
-
-	@Override
-	public void printByteArraySize(byte[] bytes) throws RemoteException {
-		System.out.println("Size of the array in parameter: " + bytes.length);
 	}
 
 	@Override
@@ -77,14 +68,14 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean create(String name) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+		File newFile = new File(name, null);
+		headerList.add(newFile.getHeader());
+		return fileList.add(newFile);
 	}
 
 	@Override
-	public HashMap<String, Integer> list() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Header> list() throws RemoteException {
+		return headerList;
 	}
 
 	@Override

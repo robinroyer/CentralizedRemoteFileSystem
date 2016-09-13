@@ -12,20 +12,52 @@ public class Client {
 
 	private static String REMOTE_SERVER_IP = "132.207.12.200";
 	private ServerInterface distantServerStub = null;
-	private byte[] bytesArrayArgument = null;
 
 	public static void main(String[] args) {
-		/*
-		 * String distantHostname = null; Double powerOfTen = 0.;
-		 * 
-		 * if (args.length > 0) { distantHostname = args[0]; powerOfTen =
-		 * Double.parseDouble(args[1]); }
-		 * 
-		 * Client client = new Client(distantHostname, new
-		 * byte[(int)Math.pow(10., powerOfTen)]); client.run();
-		 */
 		Client client = new Client(REMOTE_SERVER_IP);
-		client.run();
+
+		String action = args[0];
+		String filename = args[1];
+
+		// TODO: Vérification des arguments
+		// TODO: Modification architecture pour run ? Surement moyen de faire plus propre
+		// et plus court !
+		switch (action) {
+			case "create":
+				filename = checkFirstArgument(args);
+				client.createFile(filename);
+				break;
+			case "list":
+				client.displayList();
+				break;
+			case "syncLocalDir":
+				client.synchroLocalDirectory();
+				break;
+			case "get":
+				filename = checkFirstArgument(args);
+				client.getFile(filename);
+				break;
+			case "lock":
+				filename = checkFirstArgument(args);
+				client.lockFile(filename);
+				break;
+			case "push":
+				filename = checkFirstArgument(args);
+				client.pushFile(filename);
+				break;
+		}
+	}
+
+		private static String checkFirstArgument(String[] args) {
+		String fileName = args[1];
+		try {
+			if (fileName == null)
+			{	throw new IllegalArgumentException();
+			}
+		} catch (IllegalArgumentException e) {
+			System.err.println("Invalid argument: please check readme.txt");
+		}
+		return fileName;
 	}
 
 	public Client(String distantServerHostname) {
@@ -40,25 +72,19 @@ public class Client {
 		}
 	}
 
-//	public Client(String distantServerHostname, byte[] bytes) {
-//		super();
-//
-//		if (System.getSecurityManager() == null) {
-//			System.setSecurityManager(new SecurityManager());
-//		}
-//
-//		bytesArrayArgument = bytes;
-//
-//		if (distantServerHostname != null) {
-//			distantServerStub = loadServerStub(distantServerHostname);
-//		}
-//	}
-
-	private void run() {
-		if (distantServerStub != null) {
-			appelRMIDistant();
-		}
-	}
+	// public Client(String distantServerHostname, byte[] bytes) {
+	// super();
+	//
+	// if (System.getSecurityManager() == null) {
+	// System.setSecurityManager(new SecurityManager());
+	// }
+	//
+	// bytesArrayArgument = bytes;
+	//
+	// if (distantServerHostname != null) {
+	// distantServerStub = loadServerStub(distantServerHostname);
+	// }
+	// }
 
 	private ServerInterface loadServerStub(String hostname) {
 		ServerInterface stub = null;
@@ -77,17 +103,40 @@ public class Client {
 		return stub;
 	}
 
-	private void appelRMIDistant() {
+	private void createFile(String filename) {
 		try {
-			long start = System.nanoTime();
-			int result = distantServerStub.execute(4, 7);
-			distantServerStub.printByteArraySize(bytesArrayArgument);
-			long end = System.nanoTime();
-
-			System.out.println("Temps ecoule appel RMI distant: " + (end - start) + " ns");
-			System.out.println("Resultat appel RMI distant: " + result);
+			distantServerStub.create(filename);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}
+	}
+	
+	private void displayList() 
+	{
+		try {
+			distantServerStub.list();
+		} catch (RemoteException e) {
+			System.out.println("Erreur: " + e.getMessage());
+		}	
+	}
+	
+	private void pushFile(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void lockFile(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void getFile(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void synchroLocalDirectory() {
+		// TODO Auto-generated method stub
+		
 	}
 }

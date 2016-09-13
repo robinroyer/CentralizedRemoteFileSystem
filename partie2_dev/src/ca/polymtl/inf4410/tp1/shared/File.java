@@ -1,17 +1,20 @@
 package ca.polymtl.inf4410.tp1.shared;
 
-// TODO: Split a file: have one header and one content
+/**
+ * 
+ * @author Jeremy
+ *
+ */
 public class File {
-	private String name; 
-	private Integer owner;
-	private Integer checksum;
-	private boolean lock;
-	private byte[] content;
+	private Header header;
+	private Content content;
 	
 	/**
 	 * Default constructor without any field
 	 */
 	public File() {
+		this.header = null;
+		this.content = null;
 	}
 	
 	/**
@@ -20,77 +23,35 @@ public class File {
 	 * @param content: the content of the file
 	 */
 	public File(String name, byte[] content) {
-		super();
-		this.name = name;
-		this.owner = -1;
-		this.checksum = generateChecksum(content);
-		this.lock = false;
-		this.content = content;
-	}
-	
-	private Integer generateChecksum(byte[] content) {
-		// TODO Auto-generated method stub
-		return null;
+		this.header = new Header(name);
+		this.content = new Content(content);
 	}
 
 	/**
-	 * @return the name
+	 * @return the header
 	 */
-	public String getName() {
-		return name;
+	public Header getHeader() {
+		return header;
 	}
+
 	/**
-	 * @param name the name to set
+	 * @param header the header to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setHeader(Header header) {
+		this.header = header;
 	}
-	/**
-	 * @return the owner
-	 */
-	public Integer getOwner() {
-		return owner;
-	}
-	/**
-	 * @param owner the owner to set
-	 */
-	public void setOwner(Integer owner) {
-		this.owner = owner;
-	}
-	/**
-	 * @return the checksum
-	 */
-	public Integer getChecksum() {
-		return checksum;
-	}
-	/**
-	 * @param checksum the checksum to set
-	 */
-	public void setChecksum(Integer checksum) {
-		this.checksum = checksum;
-	}
-	/**
-	 * @return the lock
-	 */
-	public boolean isLock() {
-		return lock;
-	}
-	/**
-	 * @param lock the lock to set
-	 */
-	public void setLock(boolean lock) {
-		this.lock = lock;
-	}
+
 	/**
 	 * @return the content
 	 */
-	public byte[] getContent() {
+	public Content getContent() {
 		return content;
 	}
+
 	/**
 	 * @param content the content to set
 	 */
-	public void setContent(byte[] content) {
+	public void setContent(Content content) {
 		this.content = content;
 	}
 }
