@@ -51,18 +51,6 @@ public class Client {
 		}
 	}
 
-	private static String checkFirstArgument(String[] args) {
-		String fileName = args[1];
-		try {
-			if (fileName == null) {
-				throw new IllegalArgumentException();
-			}
-		} catch (IllegalArgumentException e) {
-			System.err.println("Invalid argument: please check readme.txt");
-		}
-		return fileName;
-	}
-
 	public Client(String distantServerHostname) {
 		super();
 
@@ -143,5 +131,17 @@ public class Client {
 	private void synchroLocalDirectory() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	private static String checkFirstArgument(String[] args) {
+		String fileName = args[1];
+		try {
+			if (fileName == null) {
+				throw new IllegalArgumentException();
+			}
+		} catch (IllegalArgumentException e) {
+			System.err.println("Invalid argument: please check readme.txt");
+		}
+		return fileName;
 	}
 }

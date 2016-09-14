@@ -1,6 +1,13 @@
 package ca.polymtl.inf4410.tp1.shared;
 
-public class Header {
+import java.io.Serializable;
+
+public class Header implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3884750658586381809L;
 	private String name; 
 	private Integer owner;
 	private boolean lock;
@@ -49,7 +56,6 @@ public class Header {
 	public void setOwner(Integer owner) {
 		this.owner = owner;
 	}
-
 
 	/**
 	 * @return the lock

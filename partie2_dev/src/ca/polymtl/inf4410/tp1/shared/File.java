@@ -1,11 +1,17 @@
 package ca.polymtl.inf4410.tp1.shared;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author Jeremy
  *
  */
-public class File {
+public class File implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4285731006093427707L;
 	private Header header;
 	private Content content;
 	

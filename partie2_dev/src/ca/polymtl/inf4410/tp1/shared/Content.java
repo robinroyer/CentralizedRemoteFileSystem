@@ -1,6 +1,13 @@
 package ca.polymtl.inf4410.tp1.shared;
 
-public class Content {
+import java.io.Serializable;
+
+public class Content implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5619314497772762182L;
 	/**
 	 * Field content, the content of a file, table of bytes
 	 */
