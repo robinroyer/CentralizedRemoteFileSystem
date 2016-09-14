@@ -151,7 +151,7 @@ public class Client {
 
 		Integer id = new Integer(-1);
 		try{
-			File f = new File ("textfile");
+			File f = new File (FILE_PATH);
 		    FileReader fr = new FileReader (f);
 		    BufferedReader br = new BufferedReader (fr);
 		    String line = br.readLine();
