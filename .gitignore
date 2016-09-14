@@ -1,4 +1,6 @@
-.DS_Strore
+*/.DS_Strore
+.DS_Store
+
 .password
 
 *.jar
