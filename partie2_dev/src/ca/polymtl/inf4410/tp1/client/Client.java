@@ -97,7 +97,7 @@ public class Client {
 	private void createFile(String filename) {
 		try {
 			distantServerStub.create(filename);
-			System.out.println("Fichier " + filename + " ajouté.");
+			System.out.println("Fichier " + filename + " ajoute.");
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}

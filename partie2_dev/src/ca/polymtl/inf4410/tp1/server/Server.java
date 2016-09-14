@@ -71,7 +71,7 @@ public class Server implements ServerInterface {
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name, null);
 
-		System.out.println("Fichier " + name + " ajouté.");
+		System.out.println("Fichier " + name + " ajoute.");
 		headerList.add(newFile.getHeader());
 		return fileList.add(newFile);
 	}
