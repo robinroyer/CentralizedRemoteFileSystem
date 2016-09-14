@@ -9,14 +9,19 @@ import java.util.ArrayList;
 
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Client {
 
-	private static final String FILE_PATH= "~/.user";
+	private static final String FILE_PATH= ".user";
 	private static String REMOTE_SERVER_IP = "132.207.12.200";
 	private ServerInterface distantServerStub = null;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Client client = new Client(REMOTE_SERVER_IP);
 
 		String action = args[0];
@@ -120,8 +125,10 @@ public class Client {
 
 	}
 
-	private void lockFile(String filename) {
+	private void lockFile(String filename) throws IOException {
 		// TODO Auto-generated method stub
+//                System.out.println(getUserId());
+                storeUserId(4);
 
 	}
 
@@ -147,30 +154,30 @@ public class Client {
 		return fileName;
 	}
 
-	private Integer getUserId() {
+	private Integer getUserId() throws IOException {
 
 		Integer id = new Integer(-1);
 		try{
-			File f = new File (FILE_PATH);
+                    java.io.File f = new java.io.File (FILE_PATH);
 		    FileReader fr = new FileReader (f);
 		    BufferedReader br = new BufferedReader (fr);
 		    String line = br.readLine();
-	 		line = line.substring(line.lastIndexOf("=")).trim();
+                    line = line.substring(line.lastIndexOf("=")).trim();
 
-	        br.close();
-	        fr.close();
+                    br.close();
+                    fr.close();
 
 
-			if (!line.isEmpty()) {
-				id = Integer.parseInt(line);
-			}
-			else{
-				id = new Integer(distantServerStub.generateClientId());
-				storeUserId(id);
-			}
+                    if (!line.isEmpty()) {
+                            id = Integer.parseInt(line);
+                    }
+                    else{
+                            id = new Integer(distantServerStub.generateClientId());
+                            storeUserId(id);
+                    }
 		}
 		catch(FileNotFoundException exception){
-			System.out.println ("Le fichier n'a pas été trouvé");
+			System.out.println ("Le fichier n'a pas ete trouve");
 			id = new Integer(distantServerStub.generateClientId());
 			storeUserId(id);
 		}
@@ -178,22 +185,25 @@ public class Client {
 			System.out.println("Erreur: " + e.getMessage());
 		}
 		catch (IOException exception){
-	        System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
-	    }
-	    catch(NumberFormatException e){
-	        System.out.println ("Fichier d'id corrompu : " + exception.getMessage());
-	    }
+                    System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
+                }
+                catch(NumberFormatException e){
+                    System.out.println ("Fichier d'id corrompu : " + e.getMessage());
+                }
 
 		return id;
 	}
 
-	private void storeUserId(Integer id) {
+	private void storeUserId(Integer id) throws IOException {
 
 		String stringToStore = "id="+ id;
-
-		File userFile = new File(FILE_PATH);
-		FileWriter userFileWritter = new FileWriter(userFile, false);
-		userFileWritter.write(stringToStore);
-		userFileWritter.close();
+		java.io.File userFile = new java.io.File(FILE_PATH);
+                if (! userFile.exists()) {
+                        userFile.createNewFile();
+                }
+                
+                try (FileWriter userFileWritter = new FileWriter(userFile, false)) {
+                    userFileWritter.write(stringToStore);
+                }
 	}
 }
