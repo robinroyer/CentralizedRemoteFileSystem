@@ -61,8 +61,15 @@ public class Server implements ServerInterface {
 
 	@Override
 	public int generateClientId() throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
+                // generate random id
+		int id = (int)(Math.random() * Integer.MAX_VALUE);
+                
+                // check for uniqueness of the id
+                while(clientsId.contains(id)){
+                    id = (int)(Math.random() * Integer.MAX_VALUE);
+                }
+                
+		return id;
 	}
 
 	@Override
