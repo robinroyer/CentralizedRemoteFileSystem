@@ -67,13 +67,18 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean create(String name) throws RemoteException {
+
+		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name, null);
+
+		System.out.println("Fichier " + name + " ajouté.");
 		headerList.add(newFile.getHeader());
 		return fileList.add(newFile);
 	}
 
 	@Override
 	public ArrayList<Header> list() throws RemoteException {
+		System.out.println("Demande de la liste ...");
 		return headerList;
 	}
 
