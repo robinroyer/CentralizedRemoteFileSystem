@@ -1,6 +1,7 @@
-*/.DS_Strore
+*/.DS_Store
 .DS_Store
-
+*/.user
+.user
 .password
 
 *.jar
