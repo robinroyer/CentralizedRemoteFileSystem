@@ -127,7 +127,7 @@ public class Client {
 
 	private void lockFile(String filename) throws IOException {
 		// TODO Auto-generated method stub
-                Int id = getUserId();
+                int id = getUserId();
 
 
 	}
@@ -141,7 +141,7 @@ public class Client {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private static String checkFirstArgument(String[] args) {
 		String fileName = args[1];
 		try {
