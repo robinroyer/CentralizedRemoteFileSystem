@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -40,7 +42,6 @@ public class Server implements ServerInterface {
 		try {
 			ServerInterface stub = (ServerInterface) UnicastRemoteObject
 					.exportObject(this, 0);
-
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind("server", stub);
 			System.out.println("Server ready.");
@@ -61,20 +62,20 @@ public class Server implements ServerInterface {
 
 	@Override
 	public int generateClientId() throws RemoteException {
-                // generate random id
+		// generate random id
 		int id = (int)(Math.random() * Integer.MAX_VALUE);
-                
-                // check for uniqueness of the id
-                while(clientsId.contains(id)){
-                    id = (int)(Math.random() * Integer.MAX_VALUE);
-                }
+		
+		// check for uniqueness of the id
+		while(clientsId.contains(id)) {
+			id = (int)(Math.random() * Integer.MAX_VALUE);
+		}
+		
  		System.out.println("Nouvel user id cree avec l'id : " + id );               
 		return id;
 	}
 
 	@Override
 	public boolean create(String name) throws RemoteException {
-
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name, null);
 
@@ -96,20 +97,47 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public File get(String name, Integer checksum) throws RemoteException {
+	public File get(String name, byte[] checksum) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean lock(String name, Integer clientId, Integer checksum) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
+		File file = null;
+		
+		if((file = fileList.get(fileList.indexOf(name))) == null) {
+			System.err.println("Le fichier " + name + " n'existe pas.");
+			return false;
+		}
+		
+		if(file.getContent().getChecksum() != checksum) {
+			// TODO demander si on doit faire ca ou non 
+			// En gros, on peut lock que si on a la version du serveur
+			System.err.println("Checksum different, get à faire avant lock.");
+			return false;
+		}
+			
+		System.out.println("Verouillage du fichier en cours ...");
+		file.getHeader().setLock(true);
+		System.out.println("Fichier " + name + " vérouillé par client " + clientId);
+		return true;
 	}
 
 	@Override
 	public boolean push(String name, byte[] content, Integer clientId) throws RemoteException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private byte[] computeChecksum(byte[] file) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return md.digest(file);
 	}
 }

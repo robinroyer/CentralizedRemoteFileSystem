@@ -1,23 +1,27 @@
 package ca.polymtl.inf4410.tp1.client;
 
-import java.rmi.AccessException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.ArrayList;
-
-import ca.polymtl.inf4410.tp1.shared.Header;
-import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+
+import ca.polymtl.inf4410.tp1.shared.Header;
+import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
 public class Client {
 
-	private static final String FILE_PATH= ".user";
+	private static final String FILE_PATH = ".user";
 	private static String REMOTE_SERVER_IP = "132.207.12.200";
 	private ServerInterface distantServerStub = null;
 
@@ -29,8 +33,7 @@ public class Client {
 
 		// TODO: Verification des arguments
 		// TODO: Modification architecture pour run ? Surement moyen de faire
-		// plus propre
-		// et plus court !
+		// plus propre et plus court !
 		switch (action) {
 		case "create":
 			filename = checkFirstArgument(args);
@@ -59,7 +62,7 @@ public class Client {
 
 	public Client(String distantServerHostname) {
 		super();
-
+		
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
@@ -68,20 +71,6 @@ public class Client {
 			distantServerStub = loadServerStub(distantServerHostname);
 		}
 	}
-
-	// public Client(String distantServerHostname, byte[] bytes) {
-	// super();
-	//
-	// if (System.getSecurityManager() == null) {
-	// System.setSecurityManager(new SecurityManager());
-	// }
-	//
-	// bytesArrayArgument = bytes;
-	//
-	// if (distantServerHostname != null) {
-	// distantServerStub = loadServerStub(distantServerHostname);
-	// }
-	// }
 
 	private ServerInterface loadServerStub(String hostname) {
 		ServerInterface stub = null;
@@ -122,14 +111,23 @@ public class Client {
 
 	private void pushFile(String filename) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void lockFile(String filename) throws IOException {
-		// TODO Auto-generated method stub
-                int id = getUserId();
-
-
+		// get a user id
+		int clientId = getUserId();
+		
+		// open the local file and calculate the checksum
+		byte[] data = Files.readAllBytes(Paths.get(filename));
+		byte[] checksum = computeChecksum(data);
+		
+		// lock the file
+		if (distantServerStub.lock(filename, clientId, checksum)){
+			System.out.println("Fichier " + filename + "vérouillé.");
+		}
+		else {
+			System.out.println("Impossible de vérouiller le fichier " + filename);
+		}
 	}
 
 	private void getFile(String filename) {
@@ -157,58 +155,63 @@ public class Client {
 	private Integer getUserId() throws IOException {
 
 		Integer id = new Integer(-1);
-		try{
-                    java.io.File f = new java.io.File (FILE_PATH);
-		    FileReader fr = new FileReader (f);
-		    BufferedReader br = new BufferedReader (fr);
-		    String line = br.readLine();
-                    line = line.substring(line.lastIndexOf("=") + 1).trim();
+		try {
+			java.io.File f = new java.io.File(FILE_PATH);
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			String line = br.readLine();
+			line = line.substring(line.lastIndexOf("=") + 1).trim();
 
-                    br.close();
-                    fr.close();
+			br.close();
+			fr.close();
 
-
-                    if (!line.isEmpty()) {
-                            id = Integer.parseInt(line);
-			    System.out.println("Vous etes deja l'utilisateur : " + id);
-                    }
-                    else{
-                            id = new Integer(distantServerStub.generateClientId());
-                            storeUserId(id);
-			    System.out.println("Demande d'un nouvel id aupres du serveur...");
-			    System.out.println("Vous etes l'utilisateur :" + id);
-                    }
-		}
-		catch(FileNotFoundException exception){
+			if (!line.isEmpty()) {
+				id = Integer.parseInt(line);
+				System.out.println("Vous etes deja l'utilisateur : " + id);
+			} else {
+				id = new Integer(distantServerStub.generateClientId());
+				storeUserId(id);
+				System.out.println("Demande d'un nouvel id aupres du serveur...");
+				System.out.println("Vous etes l'utilisateur :" + id);
+			}
+		} catch (FileNotFoundException exception) {
 			id = new Integer(distantServerStub.generateClientId());
 			storeUserId(id);
 			System.out.println("Demande d'un nouvel id aupres du serveur...");
-                        System.out.println("Vous etes l'utilisateur :" + id);
+			System.out.println("Vous etes l'utilisateur :" + id);
 
-		}
-		catch (RemoteException e) {
+		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
+		} catch (IOException exception) {
+			System.out.println("Erreur lors de la lecture : " + exception.getMessage());
+		} catch (NumberFormatException e) {
+			System.out.println("Fichier d'id corrompu : " + e.getMessage());
 		}
-		catch (IOException exception){
-                    System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
-                }
-                catch(NumberFormatException e){
-                    System.out.println ("Fichier d'id corrompu : " + e.getMessage());
-                }
 
 		return id;
 	}
 
 	private void storeUserId(Integer id) throws IOException {
 
-		String stringToStore = "id="+ id;
+		String stringToStore = "id=" + id;
 		java.io.File userFile = new java.io.File(FILE_PATH);
-                if (! userFile.exists()) {
-                        userFile.createNewFile();
-                }
-                
-                try (FileWriter userFileWritter = new FileWriter(userFile, false)) {
-                    userFileWritter.write(stringToStore);
-                }
+		if (!userFile.exists()) {
+			userFile.createNewFile();
+		}
+
+		try (FileWriter userFileWritter = new FileWriter(userFile, false)) {
+			userFileWritter.write(stringToStore);
+		}
+	}
+	
+	private byte[] computeChecksum(byte[] file) {
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return md.digest(file);
 	}
 }

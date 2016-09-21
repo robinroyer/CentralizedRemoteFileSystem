@@ -15,7 +15,7 @@ public class Content implements Serializable {
 	/**
 	 * Field checksum, content a representation of the content
 	 */
-	private Integer checksum;
+	private byte[] checksum;
 	
 	/**
 	 * Default constructor
@@ -50,14 +50,14 @@ public class Content implements Serializable {
 	/**
 	 * @return the checksum
 	 */
-	public Integer getChecksum() {
+	public byte[] getChecksum() {
 		return checksum;
 	}
 
 	/**
 	 * @param checksum the checksum to set
 	 */
-	public void setChecksum(Integer checksum) {
+	public void setChecksum(byte[] checksum) {
 		this.checksum = checksum;
 	}
 
@@ -66,7 +66,7 @@ public class Content implements Serializable {
 	 * @param content
 	 * @return checksum value
 	 */
-	private Integer calculateChecksum(byte[] content) {
+	private byte[] calculateChecksum(byte[] content) {
 		// TODO Auto-generated method stub
 		return null;
 	}

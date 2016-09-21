@@ -13,7 +13,7 @@ public interface ServerInterface extends Remote {
 	boolean create(String name) throws RemoteException;
 	ArrayList<Header> list() throws RemoteException;
 	ArrayList<File> syncLocalDir() throws RemoteException;
-	File get(String name, Integer checksum) throws RemoteException;
-	boolean lock(String name, Integer clientId, Integer checksum) throws RemoteException;
+	File get(String name, byte[] checksum) throws RemoteException;
+	boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException;
 	boolean push(String name, byte[] content, Integer clientId) throws RemoteException;
 }
