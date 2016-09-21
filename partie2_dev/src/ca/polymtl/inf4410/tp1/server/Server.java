@@ -68,7 +68,7 @@ public class Server implements ServerInterface {
                 while(clientsId.contains(id)){
                     id = (int)(Math.random() * Integer.MAX_VALUE);
                 }
-                
+ 		System.out.println("Nouvel user id cree avec l'id : " + id );               
 		return id;
 	}
 

@@ -127,8 +127,8 @@ public class Client {
 
 	private void lockFile(String filename) throws IOException {
 		// TODO Auto-generated method stub
-//                System.out.println(getUserId());
-                storeUserId(4);
+                Int id = getUserId();
+
 
 	}
 
@@ -162,7 +162,7 @@ public class Client {
 		    FileReader fr = new FileReader (f);
 		    BufferedReader br = new BufferedReader (fr);
 		    String line = br.readLine();
-                    line = line.substring(line.lastIndexOf("=")).trim();
+                    line = line.substring(line.lastIndexOf("=") + 1).trim();
 
                     br.close();
                     fr.close();
@@ -170,16 +170,21 @@ public class Client {
 
                     if (!line.isEmpty()) {
                             id = Integer.parseInt(line);
+			    System.out.println("Vous etes deja l'utilisateur : " + id);
                     }
                     else{
                             id = new Integer(distantServerStub.generateClientId());
                             storeUserId(id);
+			    System.out.println("Demande d'un nouvel id aupres du serveur...");
+			    System.out.println("Vous etes l'utilisateur :" + id);
                     }
 		}
 		catch(FileNotFoundException exception){
-			System.out.println ("Le fichier n'a pas ete trouve");
 			id = new Integer(distantServerStub.generateClientId());
 			storeUserId(id);
+			System.out.println("Demande d'un nouvel id aupres du serveur...");
+                        System.out.println("Vous etes l'utilisateur :" + id);
+
 		}
 		catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
