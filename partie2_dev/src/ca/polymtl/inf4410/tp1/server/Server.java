@@ -141,15 +141,4 @@ public class Server implements ServerInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	private byte[] computeChecksum(byte[] file) {
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return md.digest(file);
-	}
 }
