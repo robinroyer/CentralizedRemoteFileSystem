@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
@@ -16,6 +17,8 @@ import java.rmi.registry.Registry;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
@@ -112,7 +115,12 @@ public class Client {
 	}
 
 	private void pushFile(String filename) {
-		byte[] fileToPush = getLocalFile(filename);
+		try {
+			byte[] fileToPush = getLocalFile(filename);
+		} catch (NoSuchFileException e) {
+			System.err.println("Vous essayez de pousser un fichier non present en local.");
+			System.err.println("Verifier votre chemin d acces !");
+		}
 		// TODO continue this function, check if need to send checksum first
 	}
 
@@ -133,17 +141,28 @@ public class Client {
 	}
 
 	private void getFile(String filename) {
-		byte[] file = getLocalFile(filename);
-		byte[] checksum = computeChecksum(file);
-		File result = null;
+		byte[] file = null;
+		byte[] checksum = null;
 		
+		try {
+			file = getLocalFile(filename);
+		} catch (NoSuchFileException e) {
+			System.out.println("Version local inexistante.");
+			System.out.println("Recuperation de la version du serveur.");
+		}
+
+		if (file != null)
+			checksum = computeChecksum(file);
+
+		File result = null;
+
 		try {
 			result = distantServerStub.get(filename, checksum);
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI getFile(" + filename + "," + checksum + ").");
 			e.printStackTrace();
 		}
-		
+
 		try {
 			storeLocalFile(result);
 		} catch (FileNotFoundException e) {
@@ -224,12 +243,14 @@ public class Client {
 		}
 	}
 
-	private byte[] getLocalFile(String filename) {
+	private byte[] getLocalFile(String filename) throws NoSuchFileException {
 		byte[] file = null;
 		try {
 			file = Files.readAllBytes(Paths.get(filename));
+		} catch (NoSuchFileException e) {
+			// TODO savoir quoi faire dans ce cas
+			throw new NoSuchFileException("Fichier inexistant en local.");
 		} catch (IOException e) {
-			System.err.println("Impossible d'acceder au fichier " + filename);
 			e.printStackTrace();
 		}
 		return file;
