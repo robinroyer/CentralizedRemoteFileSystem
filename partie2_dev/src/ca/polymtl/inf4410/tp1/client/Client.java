@@ -165,6 +165,7 @@ public class Client {
 		try {
 			System.out.println("Recuperation de la version du serveur.");
 			result = distantServerStub.get(filename, checksum);
+			System.out.println("Fichier " + result.getHeader().getName() + " recupere.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI getFile(" + filename + "," + checksum + ").");
 			e.printStackTrace();
@@ -280,8 +281,7 @@ public class Client {
 	}
 
 	private void storeLocalFile(File file) throws FileNotFoundException, IOException {
-		FileOutputStream stream = null;
-		stream = new FileOutputStream(file.getHeader().getName());
+		FileOutputStream stream = new FileOutputStream(file.getHeader().getName());
 		stream.write(file.getContent().getContent());
 		stream.close();
 	}
