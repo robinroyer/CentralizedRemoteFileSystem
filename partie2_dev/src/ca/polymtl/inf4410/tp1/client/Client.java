@@ -18,8 +18,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
@@ -28,6 +26,7 @@ public class Client {
 
 	private static final String FILE_PATH = ".user";
 	private static String REMOTE_SERVER_IP = "132.207.12.200";
+	private static int ID_LOCK_CANCEL = 10;
 	private ServerInterface distantServerStub = null;
 
 	public static void main(String[] args) throws IOException {
@@ -124,18 +123,28 @@ public class Client {
 		// TODO continue this function, check if need to send checksum first
 	}
 
-	private void lockFile(String filename) throws IOException {
+	private void lockFile(String filename) {
 		// get a user id
 		int clientId = getUserId();
 
 		// open the local file and calculate the checksum
-		byte[] data = getLocalFile(filename);
+		byte[] data = null;
+
+		try {
+			data = getLocalFile(filename);
+		} catch (NoSuchFileException e) {
+			System.out.println("Fichier non detecte en local.");
+			System.out.println("Annulation de l'operation de verouillage.");
+			System.exit(ID_LOCK_CANCEL);
+		}
+
 		byte[] checksum = computeChecksum(data);
 
 		// lock the file
-		if (distantServerStub.lock(filename, clientId, checksum)) {
+		try {
+			distantServerStub.lock(filename, clientId, checksum);
 			System.out.println("Fichier " + filename + "verouille.");
-		} else {
+		} catch (Exception e) {
 			System.out.println("Impossible de verouiller le fichier " + filename);
 		}
 	}
@@ -143,7 +152,7 @@ public class Client {
 	private void getFile(String filename) {
 		byte[] file = null;
 		byte[] checksum = null;
-		
+
 		try {
 			file = getLocalFile(filename);
 		} catch (NoSuchFileException e) {
@@ -191,7 +200,7 @@ public class Client {
 		return fileName;
 	}
 
-	private Integer getUserId() throws IOException {
+	private Integer getUserId() {
 
 		Integer id = new Integer(-1);
 		try {
@@ -214,17 +223,22 @@ public class Client {
 				System.out.println("Vous etes l'utilisateur :" + id);
 			}
 		} catch (FileNotFoundException exception) {
-			id = new Integer(distantServerStub.generateClientId());
-			storeUserId(id);
-			System.out.println("Demande d'un nouvel id aupres du serveur...");
-			System.out.println("Vous etes l'utilisateur :" + id);
-
+			try {
+				id = new Integer(distantServerStub.generateClientId());
+				storeUserId(id);
+				System.out.println("Demande d'un nouvel id aupres du serveur...");
+				System.out.println("Vous etes l'utilisateur :" + id);
+			} catch (RemoteException e) {
+				System.err.println("Remote exception : " + e);
+			} catch (IOException e) {
+				System.err.println("Erreur acces au fichier : " + e);
+			}
 		} catch (RemoteException e) {
-			System.out.println("Erreur: " + e.getMessage());
-		} catch (IOException exception) {
-			System.out.println("Erreur lors de la lecture : " + exception.getMessage());
+			System.err.println("Erreur: " + e.getMessage());
+		} catch (IOException e) {
+			System.err.println("Erreur lors de la lecture : " + e.getMessage());
 		} catch (NumberFormatException e) {
-			System.out.println("Fichier d'id corrompu : " + e.getMessage());
+			System.err.println("Fichier d'id corrompu : " + e.getMessage());
 		}
 
 		return id;
