@@ -20,7 +20,7 @@ public class Server implements ServerInterface {
 		Server server = new Server();
 		server.run();
 	}
-	
+
 	private ArrayList<Integer> clientsId;
 	private HashMap<String, Integer> filesLockers;
 	private ArrayList<File> fileList;
@@ -40,14 +40,12 @@ public class Server implements ServerInterface {
 		}
 
 		try {
-			ServerInterface stub = (ServerInterface) UnicastRemoteObject
-					.exportObject(this, 0);
+			ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(this, 0);
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind("server", stub);
 			System.out.println("Server ready.");
 		} catch (ConnectException e) {
-			System.err
-					.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
+			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -57,20 +55,20 @@ public class Server implements ServerInterface {
 
 	@Override
 	public void print(String message) throws RemoteException {
-		System.out.println(message);	
+		System.out.println(message);
 	}
 
 	@Override
 	public int generateClientId() throws RemoteException {
 		// generate random id
-		int id = (int)(Math.random() * Integer.MAX_VALUE);
-		
+		int id = (int) (Math.random() * Integer.MAX_VALUE);
+
 		// check for uniqueness of the id
-		while(clientsId.contains(id)) {
-			id = (int)(Math.random() * Integer.MAX_VALUE);
+		while (clientsId.contains(id)) {
+			id = (int) (Math.random() * Integer.MAX_VALUE);
 		}
-		
- 		System.out.println("Nouvel user id cree avec l'id : " + id );               
+
+		System.out.println("Nouvel user id cree avec l'id : " + id);
 		return id;
 	}
 
@@ -98,26 +96,36 @@ public class Server implements ServerInterface {
 
 	@Override
 	public File get(String name, byte[] checksum) throws RemoteException {
-		// TODO Auto-generated method stub
+		if (checksum == null)
+			return getFile(name);
+						
+		return null;
+	}
+
+	private File getFile(String name) {
+		for(File file : fileList) {
+			if (file.getHeader().getName().equals(name))
+				return file;
+		}
 		return null;
 	}
 
 	@Override
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
 		File file = null;
-		
-		if((file = fileList.get(fileList.indexOf(name))) == null) {
+
+		if ((file = fileList.get(fileList.indexOf(name))) == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
-		
-		if(file.getContent().getChecksum() != checksum) {
-			// TODO demander si on doit faire ca ou non 
+
+		if (file.getContent().getChecksum() != checksum) {
+			// TODO demander si on doit faire ca ou non
 			// En gros, on peut lock que si on a la version du serveur
 			System.err.println("Checksum different, get a faire avant lock.");
 			return false;
 		}
-			
+
 		System.out.println("Verouillage du fichier en cours ...");
 		file.getHeader().setLock(true);
 		System.out.println("Fichier " + name + " verouille par client " + clientId);
@@ -129,7 +137,7 @@ public class Server implements ServerInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	private byte[] computeChecksum(byte[] file) {
 		MessageDigest md = null;
 		try {
