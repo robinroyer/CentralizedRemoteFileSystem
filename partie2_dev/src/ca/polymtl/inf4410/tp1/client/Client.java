@@ -114,12 +114,12 @@ public class Client {
 	}
 
 	private void pushFile(String filename) {
-		try {
+		/*try {
 			byte[] fileToPush = getLocalFile(filename);
 		} catch (NoSuchFileException e) {
 			System.err.println("Vous essayez de pousser un fichier non present en local.");
 			System.err.println("Verifier votre chemin d acces !");
-		}
+		}*/
 		// TODO continue this function, check if need to send checksum first
 	}
 

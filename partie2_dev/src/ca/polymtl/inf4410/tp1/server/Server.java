@@ -5,10 +5,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
@@ -22,14 +19,14 @@ public class Server implements ServerInterface {
 	}
 
 	private ArrayList<Integer> clientsId;
-	private HashMap<String, Integer> filesLockers;
+	//private HashMap<String, Integer> filesLockers;
 	private ArrayList<File> fileList;
 	private ArrayList<Header> headerList;
 
 	public Server() {
 		super();
 		clientsId = new ArrayList<Integer>();
-		filesLockers = new HashMap<String, Integer>();
+		//filesLockers = new HashMap<String, Integer>();
 		fileList = new ArrayList<File>();
 		headerList = new ArrayList<Header>();
 	}
@@ -118,7 +115,7 @@ public class Server implements ServerInterface {
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
 		File file = null;
 
-		if ((file = getFile(name)) == null) {
+		if ((file = fileList.get(fileList.indexOf(name))) == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
