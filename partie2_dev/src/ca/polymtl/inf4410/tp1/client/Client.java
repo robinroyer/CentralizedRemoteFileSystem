@@ -2,6 +2,7 @@ package ca.polymtl.inf4410.tp1.client;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
@@ -62,7 +64,7 @@ public class Client {
 
 	public Client(String distantServerHostname) {
 		super();
-		
+
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
@@ -110,29 +112,47 @@ public class Client {
 	}
 
 	private void pushFile(String filename) {
-		// TODO Auto-generated method stub
+		byte[] fileToPush = getLocalFile(filename);
+		// TODO continue this function, check if need to send checksum first
 	}
 
 	private void lockFile(String filename) throws IOException {
 		// get a user id
 		int clientId = getUserId();
-		
+
 		// open the local file and calculate the checksum
-		byte[] data = Files.readAllBytes(Paths.get(filename));
+		byte[] data = getLocalFile(filename);
 		byte[] checksum = computeChecksum(data);
-		
+
 		// lock the file
-		if (distantServerStub.lock(filename, clientId, checksum)){
-			System.out.println("Fichier " + filename + "vérouillé.");
-		}
-		else {
-			System.out.println("Impossible de vérouiller le fichier " + filename);
+		if (distantServerStub.lock(filename, clientId, checksum)) {
+			System.out.println("Fichier " + filename + "verouille.");
+		} else {
+			System.out.println("Impossible de verouiller le fichier " + filename);
 		}
 	}
 
 	private void getFile(String filename) {
-		// TODO Auto-generated method stub
-
+		byte[] file = getLocalFile(filename);
+		byte[] checksum = computeChecksum(file);
+		File result = null;
+		
+		try {
+			result = distantServerStub.get(filename, checksum);
+		} catch (RemoteException e) {
+			System.err.println("Erreur RMI getFile(" + filename + "," + checksum + ").");
+			e.printStackTrace();
+		}
+		
+		try {
+			storeLocalFile(result);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void synchroLocalDirectory() {
@@ -203,7 +223,18 @@ public class Client {
 			userFileWritter.write(stringToStore);
 		}
 	}
-	
+
+	private byte[] getLocalFile(String filename) {
+		byte[] file = null;
+		try {
+			file = Files.readAllBytes(Paths.get(filename));
+		} catch (IOException e) {
+			System.err.println("Impossible d'acceder au fichier " + filename);
+			e.printStackTrace();
+		}
+		return file;
+	}
+
 	private byte[] computeChecksum(byte[] file) {
 		MessageDigest md = null;
 		try {
@@ -213,5 +244,12 @@ public class Client {
 			e.printStackTrace();
 		}
 		return md.digest(file);
+	}
+
+	private void storeLocalFile(File file) throws FileNotFoundException, IOException {
+		FileOutputStream stream = null;
+		stream = new FileOutputStream(file.getHeader().getName());
+		stream.write(file.getContent().getContent());
+		stream.close();
 	}
 }

@@ -120,7 +120,7 @@ public class Server implements ServerInterface {
 			
 		System.out.println("Verouillage du fichier en cours ...");
 		file.getHeader().setLock(true);
-		System.out.println("Fichier " + name + " vérouillé par client " + clientId);
+		System.out.println("Fichier " + name + " verouille par client " + clientId);
 		return true;
 	}
 
