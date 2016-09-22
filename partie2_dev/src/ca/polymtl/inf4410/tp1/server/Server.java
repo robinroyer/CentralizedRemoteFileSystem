@@ -75,7 +75,7 @@ public class Server implements ServerInterface {
 	@Override
 	public boolean create(String name) throws RemoteException {
 		System.out.println("Creation du fichier " + name + " ...");
-		File newFile = new File(name, null);
+		File newFile = new File(name);
 
 		System.out.println("Fichier " + name + " ajoute.");
 		headerList.add(newFile.getHeader());

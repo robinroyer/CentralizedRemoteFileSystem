@@ -23,6 +23,16 @@ public class File implements Serializable {
 		this.content = null;
 	}
 	
+	
+	/**
+	 * 
+	 * @param name: the name of the file
+	 */
+	public File(String name) {
+		this.header = new Header(name);
+		this.content = new Content();
+	}
+	
 	/**
 	 * 
 	 * @param name: the name of the file

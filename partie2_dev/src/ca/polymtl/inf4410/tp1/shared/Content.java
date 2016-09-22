@@ -22,6 +22,8 @@ public class Content implements Serializable {
 	 */
 	public Content() 
 	{
+		content = new byte[0];
+		checksum = new byte[0];
 	}
 	
 	/**
