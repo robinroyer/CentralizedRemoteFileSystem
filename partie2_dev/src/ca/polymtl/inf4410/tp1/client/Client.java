@@ -147,7 +147,7 @@ public class Client {
 			distantServerStub.lock(filename, clientId, checksum);
 			System.out.println("Fichier " + filename + "verouille.");
 		} catch (Exception e) {
-			System.out.println("Impossible de verouiller le fichier " + filename);
+			//System.out.println("Impossible de verouiller le fichier " + filename);
 			e.printStackTrace();
 		}
 	}

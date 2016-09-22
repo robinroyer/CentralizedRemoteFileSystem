@@ -101,6 +101,7 @@ public class Server implements ServerInterface {
 			System.out.println("Envoie de la version cote serveur.");
 			return getFile(name);
 		}
+		// TODO faire du vrai code et rendre cette fonction robuste
 
 		return null;
 	}
