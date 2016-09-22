@@ -155,17 +155,15 @@ public class Client {
 
 		try {
 			file = getLocalFile(filename);
-		} catch (NoSuchFileException e) {
-			System.out.println("Version local inexistante.");
-			System.out.println("Recuperation de la version du serveur.");
-		}
-
-		if (file != null)
 			checksum = computeChecksum(file);
+		} catch (NoSuchFileException e) {
+			System.out.println("Version locale du fichier \"" + filename + "\" inexistante.");
+		}
 
 		File result = null;
 
 		try {
+			System.out.println("Recuperation de la version du serveur.");
 			result = distantServerStub.get(filename, checksum);
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI getFile(" + filename + "," + checksum + ").");

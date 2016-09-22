@@ -96,9 +96,12 @@ public class Server implements ServerInterface {
 
 	@Override
 	public File get(String name, byte[] checksum) throws RemoteException {
-		if (checksum == null)
+		if (checksum == null) {
+			System.out.println("Checksum non present.");
+			System.out.println("Envoie de la version cote serveur.");
 			return getFile(name);
-						
+		}
+
 		return null;
 	}
 
