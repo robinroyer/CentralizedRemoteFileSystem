@@ -118,7 +118,7 @@ public class Server implements ServerInterface {
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
 		File file = null;
 
-		if ((file = fileList.get(fileList.indexOf(name))) == null) {
+		if ((file = getFile(name)) == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
