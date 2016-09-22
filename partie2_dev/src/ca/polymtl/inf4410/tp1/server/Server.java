@@ -114,7 +114,7 @@ public class Server implements ServerInterface {
 		if(file.getContent().getChecksum() != checksum) {
 			// TODO demander si on doit faire ca ou non 
 			// En gros, on peut lock que si on a la version du serveur
-			System.err.println("Checksum different, get à faire avant lock.");
+			System.err.println("Checksum different, get a faire avant lock.");
 			return false;
 		}
 			
