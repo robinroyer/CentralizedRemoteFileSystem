@@ -190,9 +190,9 @@ public class Client {
 		}
 
 		if (result) {
-			System.out.println("Fichier " + filename + " verouille.");
+			System.out.println("Fichier \"" + filename + "\" verouille.");
 		} else {
-			System.out.println("Fichier deja verouille par un autre utilisateur.");
+			System.out.println("Fichier \"" + filename + "\" impossible a verouille.");
 		}
 
 	}
