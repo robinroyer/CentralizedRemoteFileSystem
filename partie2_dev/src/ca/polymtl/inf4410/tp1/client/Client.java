@@ -199,7 +199,7 @@ public class Client {
 
 		try {
 			for (int i = 0; i < results.size(); i++) {
-				storeLocalFile(results.get(i);				
+				storeLocalFile(results.get(i));				
 			}
 
 		} catch (FileNotFoundException e) {
