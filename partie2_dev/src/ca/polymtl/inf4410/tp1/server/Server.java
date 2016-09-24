@@ -87,8 +87,8 @@ public class Server implements ServerInterface {
 
 	@Override
 	public ArrayList<File> syncLocalDir() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("Demande de synchronisation...");
+		return fileList;
 	}
 
 	@Override

@@ -186,7 +186,27 @@ public class Client {
 	}
 
 	private void synchroLocalDirectory() {
-		// TODO Auto-generated method stub
+		ArrayList<File> results = null;
+
+		try {
+			System.out.println("Synchronisaion des fichiers avec le serveur.");
+			results = distantServerStub.syncLocalDir();
+			System.out.println("Fichier recuperes.");
+		} catch (RemoteException e) {
+			System.err.println("Erreur RMI synchroLocalDirectory()");
+			e.printStackTrace();
+		}
+
+		try {
+			for (int i = 0; i < results.size ; i++) {
+				storeLocalFile(results[i]);				
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
