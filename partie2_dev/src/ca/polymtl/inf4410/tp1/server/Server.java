@@ -126,9 +126,9 @@ public class Server implements ServerInterface {
 		/* DEBUG ZONE */
 		System.out.println("Checksum du client : " + checksum.toString());
 		System.out.println("Filename indexOf(new File()) + get : " + file.getHeader().getName());
-		System.out.println("Checksum associé : " + file.getContent().getChecksum().toString());
+		System.out.println("Checksum associe : " + file.getContent().getChecksum().toString());
 		System.out.println("Filename getFile(String) : " + getFile(name).getHeader().getName());
-		System.out.println("Checksum associé : " + getFile(name).getContent().getChecksum().toString());
+		System.out.println("Checksum associe : " + getFile(name).getContent().getChecksum().toString());
 		/* END DEBUG ZONE */
 
 		if (file.getContent().getChecksum() != checksum) {
