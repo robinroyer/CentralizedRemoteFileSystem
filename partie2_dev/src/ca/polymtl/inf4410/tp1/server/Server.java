@@ -175,6 +175,7 @@ public class Server implements ServerInterface {
 			System.out.println("Fichier \"" + name + "\" non verouille.");
 			return false;
 		}
+		
 		if (!locker.equals(clientId)) {
 			System.out.println("Fichier deja verouille par le client : " + locker);
 		}
@@ -185,7 +186,7 @@ public class Server implements ServerInterface {
 		file.getHeader().setLock(false);
 
 		// Unlock the file
-		filesLockers.remove(file);
+		filesLockers.remove(file.getHeader().getName());
 
 		return true;
 	}
