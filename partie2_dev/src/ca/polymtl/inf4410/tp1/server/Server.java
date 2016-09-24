@@ -113,15 +113,13 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
-		File file = null;
-		System.out.println(name + "  " + clientId + "   " + getFile(name).getHeader().getName());
-		int index = fileList.indexOf(new File(name));
-		if ((index) == -1) {
+		System.out.println(name + "  " + clientId + "   " + fileList.indexOf(name));
+		File file = getFile(name);
+		
+		if (file == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
-
-		file = fileList.get(index);
 		
 		/* DEBUG ZONE */
 		System.out.println("Checksum du client : " + checksum.toString());
