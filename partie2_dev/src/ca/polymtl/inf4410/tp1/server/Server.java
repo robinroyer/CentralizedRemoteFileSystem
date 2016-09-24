@@ -167,6 +167,6 @@ public class Server implements ServerInterface {
 	private void updateHeaderList(boolean locker, File file, Integer clientId) {
 		int index = headerList.indexOf(file.getHeader());
 		headerList.get(index).setLock(true);
-		headerList.get(index).setName(clientId.toString());
+		headerList.get(index).setOwner(clientId);
 	}
 }
