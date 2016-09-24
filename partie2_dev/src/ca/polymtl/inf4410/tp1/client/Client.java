@@ -133,6 +133,7 @@ public class Client {
 				for (Header h : list) {
 					System.out.println(h);
 				}
+				System.out.println(list.size() + " fichier(s)."); 
 			}
 		} catch (RemoteException e) {
 			System.out.println("Erreur : " + e.getMessage());
