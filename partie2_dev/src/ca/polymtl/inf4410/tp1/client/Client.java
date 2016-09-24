@@ -25,9 +25,10 @@ import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 public class Client {
 
 	private static final String FILE_PATH = ".user";
-	private static String REMOTE_SERVER_IP = "132.207.12.200";
-	private static int ID_LOCK_CANCEL = 10;
-	private static int ID_PUSH_CANCEL = -10;
+	private static final String REMOTE_SERVER_IP = "132.207.12.200";
+	private static final int ID_LOCK_CANCEL = 10;
+	private static final int ID_PUSH_CANCEL = -10;
+	private static final int ID_GET_CANCEL = 20;
 	private ServerInterface distantServerStub = null;
 
 	public static void main(String[] args) throws IOException {
@@ -219,6 +220,7 @@ public class Client {
 		} catch (NullPointerException e) {
 			System.err.println("Le fichier " + filename + " n'existe pas cote serveur.");
 			System.err.println("Executer ./client list pour voir la liste des fichiers disponibles.");
+			System.exit(ID_GET_CANCEL);
 		}
 
 		try {
@@ -234,7 +236,7 @@ public class Client {
 		try {
 			System.out.println("Synchronisaion des fichiers avec le serveur.");
 			results = distantServerStub.syncLocalDir();
-			System.out.println("Fichier recuperes.");
+			System.out.println("Fichier(s) recupere(s).");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI synchroLocalDirectory()");
 			e.printStackTrace();
