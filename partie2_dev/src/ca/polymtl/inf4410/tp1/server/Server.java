@@ -19,14 +19,14 @@ public class Server implements ServerInterface {
 	}
 
 	private ArrayList<Integer> clientsId;
-	//private HashMap<String, Integer> filesLockers;
+	// private HashMap<String, Integer> filesLockers;
 	private ArrayList<File> fileList;
 	private ArrayList<Header> headerList;
 
 	public Server() {
 		super();
 		clientsId = new ArrayList<Integer>();
-		//filesLockers = new HashMap<String, Integer>();
+		// filesLockers = new HashMap<String, Integer>();
 		fileList = new ArrayList<File>();
 		headerList = new ArrayList<Header>();
 	}
@@ -104,7 +104,7 @@ public class Server implements ServerInterface {
 	}
 
 	private File getFile(String name) {
-		for(File file : fileList) {
+		for (File file : fileList) {
 			if (file.getHeader().getName().equals(name))
 				return file;
 		}
@@ -114,14 +114,22 @@ public class Server implements ServerInterface {
 	@Override
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
 		File file = null;
-System.out.println(name + "  "  +  clientId + "   " + fileList.indexOf(name));
+		System.out.println(name + "  " + clientId + "   " + fileList.indexOf(name));
 		int index = fileList.indexOf(new File(name));
 		if ((index) == -1) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
-		
+
 		file = fileList.get(index);
+		
+		/* DEBUG ZONE */
+		System.out.println("Checksum du client : " + checksum.toString());
+		System.out.println("Filename indexOf(new File()) + get : " + file.getHeader().getName());
+		System.out.println("Checksum associé : " + file.getContent().getChecksum().toString());
+		System.out.println("Filename getFile(String) : " + getFile(name).getHeader().getName());
+		System.out.println("Checksum associé : " + getFile(name).getContent().getChecksum().toString());
+		/* END DEBUG ZONE */
 
 		if (file.getContent().getChecksum() != checksum) {
 			// TODO demander si on doit faire ca ou non
@@ -131,7 +139,7 @@ System.out.println(name + "  "  +  clientId + "   " + fileList.indexOf(name));
 		}
 
 		System.out.println("Verouillage du fichier en cours ...");
-	file.getHeader().setLock(true);
+		file.getHeader().setLock(true);
 		System.out.println("Fichier " + name + " verouille par client " + clientId);
 		return true;
 	}
