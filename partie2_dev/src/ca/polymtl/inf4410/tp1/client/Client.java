@@ -206,16 +206,16 @@ public class Client {
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI getFile(" + filename + "," + checksum + ").");
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			System.err.println("Le fichier " + filename + " n'existe pas cote serveur.");
+			System.err.println("Executer ./client list pour voir la liste des fichiers disponibles.");
 		}
 
 		try {
 			storeLocalFile(result);
 		} catch (IOException e) {
 			System.err.println("IOE Exception : " + e.getMessage());
-		} catch (NullPointerException e) {
-			System.err.println("Le fichier " + filename + " n'existe pas cote serveur.");
-			System.err.println("Executer ./client list pour voir la liste des fichiers disponibles.");
-		}
+		} 
 	}
 
 	private void synchroLocalDirectory() {
@@ -234,7 +234,6 @@ public class Client {
 			for (int i = 0; i < results.size(); i++) {
 				storeLocalFile(results.get(i));
 			}
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

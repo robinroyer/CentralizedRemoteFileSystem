@@ -158,14 +158,14 @@ public class Server implements ServerInterface {
 		}
 			
 		// Change the content of the file and update the header
+		System.out.println("Fichier \"" + name + "\" en cours de modification ...");
 		file.getContent().setContent(content);
 		file.getHeader().setLock(false);
 		
 		// Unlock the file
 		filesLockers.remove(file);
 
-		// Unlock the file and update the header list
-		return false;
+		return true;
 	}
 
 	/**
