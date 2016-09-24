@@ -2,6 +2,8 @@ package ca.polymtl.inf4410.tp1.shared;
 
 import java.security.MessageDigest;
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
+
 
 public class Content implements Serializable {
 
