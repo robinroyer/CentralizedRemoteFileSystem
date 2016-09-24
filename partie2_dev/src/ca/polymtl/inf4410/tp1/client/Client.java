@@ -102,24 +102,32 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Private method to display the list
+	 */
 	private void displayList() {
 		try {
 			ArrayList<Header> list = distantServerStub.list();
-			for (Header h : list) {
-				System.out.println(h);
+			if (list.isEmpty()) {
+				System.out.println("Il n'y a pas encore de fichier dans la liste !");
+			} else {
+				// Display all the elemen of the list
+				for (Header h : list) {
+					System.out.println(h);
+				}
 			}
 		} catch (RemoteException e) {
-			System.out.println("Erreur: " + e.getMessage());
+			System.out.println("Erreur : " + e.getMessage());
 		}
 	}
 
 	private void pushFile(String filename) {
-		/*try {
-			byte[] fileToPush = getLocalFile(filename);
-		} catch (NoSuchFileException e) {
-			System.err.println("Vous essayez de pousser un fichier non present en local.");
-			System.err.println("Verifier votre chemin d acces !");
-		}*/
+		/*
+		 * try { byte[] fileToPush = getLocalFile(filename); } catch
+		 * (NoSuchFileException e) { System.err.println(
+		 * "Vous essayez de pousser un fichier non present en local.");
+		 * System.err.println("Verifier votre chemin d acces !"); }
+		 */
 		// TODO continue this function, check if need to send checksum first
 	}
 
@@ -147,7 +155,8 @@ public class Client {
 			distantServerStub.lock(filename, clientId, checksum);
 			System.out.println("Fichier " + filename + " verouille.");
 		} catch (Exception e) {
-			//System.out.println("Impossible de verouiller le fichier " + filename);
+			// System.out.println("Impossible de verouiller le fichier " +
+			// filename);
 			e.printStackTrace();
 		}
 	}
@@ -199,7 +208,7 @@ public class Client {
 
 		try {
 			for (int i = 0; i < results.size(); i++) {
-				storeLocalFile(results.get(i));				
+				storeLocalFile(results.get(i));
 			}
 
 		} catch (FileNotFoundException e) {
@@ -241,14 +250,14 @@ public class Client {
 			} else {
 				id = new Integer(distantServerStub.generateClientId());
 				storeUserId(id);
-				System.out.println("Demande d'un nouvel id aupres du serveur...");
+				System.out.println("Demande d'un nouvel id aupres du serveur ...");
 				System.out.println("Vous etes l'utilisateur :" + id);
 			}
 		} catch (FileNotFoundException exception) {
 			try {
 				id = new Integer(distantServerStub.generateClientId());
 				storeUserId(id);
-				System.out.println("Demande d'un nouvel id aupres du serveur...");
+				System.out.println("Demande d'un nouvel id aupres du serveur ...");
 				System.out.println("Vous etes l'utilisateur :" + id);
 			} catch (RemoteException e) {
 				System.err.println("Remote exception : " + e);
