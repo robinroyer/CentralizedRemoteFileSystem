@@ -70,14 +70,15 @@ public class Server implements ServerInterface {
 		// Creation du fichier
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name);
-		
+
 		// Check if the file already exists
 		if (fileList.contains(getFile(name))) {
 			System.out.println("Fichier \"" + name + "\" deja existant.");
 			return false;
 		}
-		
-		// Ajout du fichier dans la structure de donnees specifique a la commande list
+
+		// Ajout du fichier dans la structure de donnees specifique a la
+		// commande list
 		headerList.add(newFile.getHeader());
 		// Ajout du fichier dans la liste des fichiers
 		System.out.println("Fichier " + name + " ajoute.");
@@ -98,14 +99,28 @@ public class Server implements ServerInterface {
 
 	@Override
 	public File get(String name, byte[] checksum) throws RemoteException {
+		// Recuperation du fichier cote server
+		File file = getFile(name);
+
+		// Fichier inexistant cote serveur
+		if (file.equals(null)) {
+			System.out.println("Fichier \"" + name + "\" inexistant cote serveur." );
+			return null;
+		}
+
+		// Absence de checksum, envoie du fichier au client
 		if (checksum == null) {
 			System.out.println("Checksum non present.");
 			System.out.println("Envoie de la version cote serveur.");
-			return getFile(name);
+			return file;
 		}
-		// TODO faire du vrai code et rendre cette fonction robuste
-
-		return null;
+		
+		// Checksum identique, inutile d'envoyer le fichier
+		if (checksum.equals(file.getContent().getChecksum())) {
+			return null;
+		}
+		
+		return file;
 	}
 
 	@Override
@@ -159,15 +174,16 @@ public class Server implements ServerInterface {
 		if (locker == null) {
 			System.out.println("Fichier \"" + name + "\" non verouille.");
 			return false;
-		} if (!locker.equals(clientId)) {
+		}
+		if (!locker.equals(clientId)) {
 			System.out.println("Fichier deja verouille par le client : " + locker);
 		}
-			
+
 		// Change the content of the file and update the header
 		System.out.println("Fichier \"" + name + "\" en cours de modification ...");
 		file.getContent().setContent(content);
 		file.getHeader().setLock(false);
-		
+
 		// Unlock the file
 		filesLockers.remove(file);
 
