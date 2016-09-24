@@ -52,11 +52,6 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public void print(String message) throws RemoteException {
-		System.out.println(message);
-	}
-
-	@Override
 	public int generateClientId() throws RemoteException {
 		// generate random id
 		int id = (int) (Math.random() * Integer.MAX_VALUE);
@@ -72,10 +67,11 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean create(String name) throws RemoteException {
-		// Creation du fichier 
+		// Creation du fichier
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name);
-		// Ajout du fichier dans la structure de donnees specifique a la commande list
+		// Ajout du fichier dans la structure de donnees specifique a la
+		// commande list
 		headerList.add(newFile.getHeader());
 		// Ajout du fichier dans la liste des fichiers
 		System.out.println("Fichier " + name + " ajoute.");
@@ -108,21 +104,20 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
+		// Check if the file exists
 		File file = getFile(name);
-		
 		if (file == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
-		
-		/* DEBUG ZONE */
-		System.out.println("Checksum du client : " + checksum.toString());
-		System.out.println("Filename indexOf(new File()) + get : " + file.getHeader().getName());
-		System.out.println("Checksum associe : " + file.getContent().getChecksum().toString());
-		System.out.println("Filename getFile(String) : " + getFile(name).getHeader().getName());
-		System.out.println("Checksum associe : " + getFile(name).getContent().getChecksum().toString());
-		/* END DEBUG ZONE */
 
+		// Check if the file is already locked
+		if (filesLockers.containsKey(name)) {
+			System.err.println("Le fichier " + name + " est deja verouille.");
+			return false;
+		}
+
+		// Check the checksum of the local file and the remote file
 		if (file.getContent().getChecksum().equals(checksum)) {
 			// TODO demander si on doit faire ca ou non
 			// En gros, on peut lock que si on a la version du serveur
@@ -130,25 +125,55 @@ public class Server implements ServerInterface {
 			return false;
 		}
 
+		// Lock the file
 		System.out.println("Verouillage du fichier en cours ...");
 		file.getHeader().setLock(true);
+		// Update header list to optimize network transfert
 		updateHeaderList(true, file, clientId);
+		// Update files/lockers hashmap
 		filesLockers.put(name, clientId);
-		
+
 		System.out.println("Fichier " + name + " verouille par client " + clientId);
 		return true;
 	}
 
 	@Override
 	public boolean push(String name, byte[] content, Integer clientId) throws RemoteException {
-		// TODO Auto-generated method stub
+		System.out.println("Essaie de push du fichier \"" + name + "\" par le client " + clientId + " ...");
+		File file = getFile(name);
+
+		// Check if the file exist
+		if (file == null) {
+			System.out.println("Fichier \"" + name + "\" inexistant cote serveur.");
+			return false;
+		}
+
+		// Check if the file has been locked before the push
+		Integer locker = filesLockers.get(name);
+		if (locker == null) {
+			System.out.println("Fichier \"" + name + "\" non verouille.");
+			return false;
+		} if (!locker.equals(clientId)) {
+			System.out.println("Fichier deja verouille par le client : " + locker);
+		}
+			
+		// Change the content of the file and update the header
+		file.getContent().setContent(content);
+		file.getHeader().setLock(false);
+		
+		// Unlock the file
+		filesLockers.remove(file);
+
+		// Unlock the file and update the header list
 		return false;
 	}
-	
+
 	/**
 	 * Returns the appropriate file according to the param name
-	 * @param name: the name of the file
-	 * @return the file 
+	 * 
+	 * @param name:
+	 *            the name of the file
+	 * @return the file or null if it does not exist
 	 */
 	private File getFile(String name) {
 		for (File file : fileList) {
@@ -160,9 +185,13 @@ public class Server implements ServerInterface {
 
 	/**
 	 * Update the header list according to its parameters
-	 * @param locker: true if we need to lock the file, false if unlock
-	 * @param file: the file to set
-	 * @param clientId: the id of the user
+	 * 
+	 * @param locker:
+	 *            true if we need to lock the file, false if unlock
+	 * @param file:
+	 *            the file to set
+	 * @param clientId:
+	 *            the id of the user
 	 */
 	private void updateHeaderList(boolean locker, File file, Integer clientId) {
 		int index = headerList.indexOf(file.getHeader());

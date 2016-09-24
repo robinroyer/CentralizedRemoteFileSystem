@@ -27,6 +27,7 @@ public class Client {
 	private static final String FILE_PATH = ".user";
 	private static String REMOTE_SERVER_IP = "132.207.12.200";
 	private static int ID_LOCK_CANCEL = 10;
+	private static int ID_PUSH_CANCEL = -10;
 	private ServerInterface distantServerStub = null;
 
 	public static void main(String[] args) throws IOException {
@@ -121,37 +122,61 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Private method to push a local file onto the server
+	 * 
+	 * @param filename:
+	 *            the name of the file
+	 */
 	private void pushFile(String filename) {
-		/*
-		 * try { byte[] fileToPush = getLocalFile(filename); } catch
-		 * (NoSuchFileException e) { System.err.println(
-		 * "Vous essayez de pousser un fichier non present en local.");
-		 * System.err.println("Verifier votre chemin d acces !"); }
-		 */
-		// TODO continue this function, check if need to send checksum first
-	}
-
-	private void lockFile(String filename) {
-		// get a user id
+		// Get the local client id
 		int clientId = getUserId();
 
-		// open the local file and calculate the checksum
-		byte[] data = null;
+		// Get the local file
+		byte[] content = null;
+		try {
+			content = getLocalFile(filename);
+		} catch (NoSuchFileException e) {
+			// Canceled if the file does not exist locally
+			System.out.println("Fichier non detecte en local.");
+			System.out.println("Annulation de l'operation de televersement du fichier " + filename + ".");
+			System.exit(ID_PUSH_CANCEL);
+		}
 
+		try {
+			distantServerStub.push(filename, content, clientId);
+		} catch (RemoteException e) {
+			System.err.println("Erreur RMI :" + e.getMessage());
+		}
+	}
+
+	/**
+	 * Lock a file on the remte server
+	 * 
+	 * @param filename:
+	 *            the name of the file to lock
+	 */
+	private void lockFile(String filename) {
+		// Get the local client id
+		int clientId = getUserId();
+
+		// Try to get the local file
+		byte[] data = null;
 		try {
 			data = getLocalFile(filename);
 		} catch (NoSuchFileException e) {
+			// Abort if the file is not present localy (avoid a lock
+			// unloackable)
 			System.out.println("Fichier non detecte en local.");
 			System.out.println("Annulation de l'operation de verouillage.");
 			System.exit(ID_LOCK_CANCEL);
 		}
 
+		// Compute the local checksum
 		byte[] checksum = computeChecksum(data);
 
-		// lock the file
+		// Lock the file
 		try {
-			System.out.println("Tentative de lock de : " + filename);
-			System.out.println("ClientId : " + clientId);
 			distantServerStub.lock(filename, clientId, checksum);
 			System.out.println("Fichier " + filename + " verouille.");
 		} catch (Exception e) {
@@ -185,12 +210,11 @@ public class Client {
 
 		try {
 			storeLocalFile(result);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("IOE Exception : " + e.getMessage());
+		} catch (NullPointerException e) {
+			System.err.println("Le fichier " + filename + " n'existe pas cote serveur.");
+			System.err.println("Executer ./client list pour voir la liste des fichiers disponibles.");
 		}
 	}
 
@@ -275,6 +299,13 @@ public class Client {
 		return id;
 	}
 
+	/**
+	 * Store the client id into a file to recognize the client
+	 * 
+	 * @param id
+	 *            the id of the client
+	 * @throws IOException
+	 */
 	private void storeUserId(Integer id) throws IOException {
 
 		String stringToStore = "id=" + id;
