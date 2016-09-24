@@ -29,6 +29,7 @@ public class Client {
 	private static final int ID_LOCK_CANCEL = 10;
 	private static final int ID_PUSH_CANCEL = -10;
 	private static final int ID_GET_CANCEL = 20;
+	private static final int ID_INVALID_ARGUMENT = 30;
 	private ServerInterface distantServerStub = null;
 
 	public static void main(String[] args) throws IOException {
@@ -63,6 +64,16 @@ public class Client {
 			filename = checkFirstArgument(args);
 			client.pushFile(filename);
 			break;
+		default:
+			System.out.println("Commande introuvable.");
+			System.out.println("Liste des commandes disponibles :");
+			System.out.println("./client create file");
+			System.out.println("./client list");
+			System.out.println("./client lock file");
+			System.out.println("./client get file");
+			System.out.println("./client push file");
+			System.out.println("./client syncLocalDir");
+			System.exit(ID_INVALID_ARGUMENT);
 		}
 	}
 
@@ -335,12 +346,19 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Private function to get the local file
+	 * 
+	 * @param filename:
+	 *            the name of the file
+	 * @return the content of the file
+	 * @throws NoSuchFileException
+	 */
 	private byte[] getLocalFile(String filename) throws NoSuchFileException {
 		byte[] file = null;
 		try {
 			file = Files.readAllBytes(Paths.get(filename));
 		} catch (NoSuchFileException e) {
-			// TODO savoir quoi faire dans ce cas
 			throw new NoSuchFileException("Fichier inexistant en local.");
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -348,13 +366,19 @@ public class Client {
 		return file;
 	}
 
+	/**
+	 * Private function to compute the checksum on the client side
+	 * 
+	 * @param file:
+	 *            the file to compute the checksum
+	 * @return the checksum associated to the file
+	 */
 	private byte[] computeChecksum(byte[] file) {
 		MessageDigest md = null;
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Erreur Algorithme " + e.getMessage());
 		}
 		return md.digest(file);
 	}
