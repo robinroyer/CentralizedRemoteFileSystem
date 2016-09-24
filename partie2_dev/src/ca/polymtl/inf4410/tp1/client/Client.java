@@ -176,14 +176,19 @@ public class Client {
 		byte[] checksum = computeChecksum(data);
 
 		// Lock the file
+		boolean result = false;
 		try {
-			distantServerStub.lock(filename, clientId, checksum);
-			System.out.println("Fichier " + filename + " verouille.");
-		} catch (Exception e) {
-			// System.out.println("Impossible de verouiller le fichier " +
-			// filename);
-			e.printStackTrace();
+			result = distantServerStub.lock(filename, clientId, checksum);
+		} catch (RemoteException e) {
+			System.err.println("Erreur RMI : " + e.getMessage());
 		}
+
+		if (result) {
+			System.out.println("Fichier " + filename + " verouille.");
+		} else {
+			System.out.println("Fichier deja verouille par un autre utilisateur.");
+		}
+
 	}
 
 	private void getFile(String filename) {
@@ -215,7 +220,7 @@ public class Client {
 			storeLocalFile(result);
 		} catch (IOException e) {
 			System.err.println("IOE Exception : " + e.getMessage());
-		} 
+		}
 	}
 
 	private void synchroLocalDirectory() {
