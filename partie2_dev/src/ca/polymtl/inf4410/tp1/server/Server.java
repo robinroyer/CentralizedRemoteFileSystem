@@ -114,11 +114,14 @@ public class Server implements ServerInterface {
 	@Override
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
 		File file = null;
-
-		if ((file = fileList.get(fileList.indexOf(name))) == null) {
+System.out.println(name + "  "  +  clientId + "   " + fileList.indexOf(name));
+		int index = fileList.indexOf(new File(name));
+		if ((index) == -1) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
 			return false;
 		}
+		
+		file = fileList.get(index);
 
 		if (file.getContent().getChecksum() != checksum) {
 			// TODO demander si on doit faire ca ou non
@@ -128,7 +131,7 @@ public class Server implements ServerInterface {
 		}
 
 		System.out.println("Verouillage du fichier en cours ...");
-		file.getHeader().setLock(true);
+	file.getHeader().setLock(true);
 		System.out.println("Fichier " + name + " verouille par client " + clientId);
 		return true;
 	}
