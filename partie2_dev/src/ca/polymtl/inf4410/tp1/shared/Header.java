@@ -76,7 +76,9 @@ public class Header implements Serializable {
 		String display = name;
 		if(lock) {
 			display += "\t - Verouille par client " + owner;
+		} else {
+			display += "\t - Non verouille";
 		}
-		return display += "\t - Non verouille";
+		return display;
 	}
 }

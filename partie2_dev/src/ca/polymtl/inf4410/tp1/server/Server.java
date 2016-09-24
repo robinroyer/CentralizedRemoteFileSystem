@@ -6,6 +6,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
@@ -19,14 +20,14 @@ public class Server implements ServerInterface {
 	}
 
 	private ArrayList<Integer> clientsId;
-	// private HashMap<String, Integer> filesLockers;
+	private HashMap<String, Integer> filesLockers;
 	private ArrayList<File> fileList;
 	private ArrayList<Header> headerList;
 
 	public Server() {
 		super();
 		clientsId = new ArrayList<Integer>();
-		// filesLockers = new HashMap<String, Integer>();
+		filesLockers = new HashMap<String, Integer>();
 		fileList = new ArrayList<File>();
 		headerList = new ArrayList<Header>();
 	}
@@ -71,11 +72,13 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean create(String name) throws RemoteException {
+		// Creation du fichier 
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name);
-
-		System.out.println("Fichier " + name + " ajoute.");
+		// Ajout du fichier dans la structure de donnees specifique a la commande list
 		headerList.add(newFile.getHeader());
+		// Ajout du fichier dans la liste des fichiers
+		System.out.println("Fichier " + name + " ajoute.");
 		return fileList.add(newFile);
 	}
 
@@ -100,14 +103,6 @@ public class Server implements ServerInterface {
 		}
 		// TODO faire du vrai code et rendre cette fonction robuste
 
-		return null;
-	}
-
-	private File getFile(String name) {
-		for (File file : fileList) {
-			if (file.getHeader().getName().equals(name))
-				return file;
-		}
 		return null;
 	}
 
@@ -137,6 +132,9 @@ public class Server implements ServerInterface {
 
 		System.out.println("Verouillage du fichier en cours ...");
 		file.getHeader().setLock(true);
+		updateHeaderList(true, file, clientId);
+		filesLockers.put(name, clientId);
+		
 		System.out.println("Fichier " + name + " verouille par client " + clientId);
 		return true;
 	}
@@ -145,5 +143,30 @@ public class Server implements ServerInterface {
 	public boolean push(String name, byte[] content, Integer clientId) throws RemoteException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	/**
+	 * Returns the appropriate file according to the param name
+	 * @param name: the name of the file
+	 * @return the file 
+	 */
+	private File getFile(String name) {
+		for (File file : fileList) {
+			if (file.getHeader().getName().equals(name))
+				return file;
+		}
+		return null;
+	}
+
+	/**
+	 * Update the header list according to its parameters
+	 * @param locker: true if we need to lock the file, false if unlock
+	 * @param file: the file to set
+	 * @param clientId: the id of the user
+	 */
+	private void updateHeaderList(boolean locker, File file, Integer clientId) {
+		int index = headerList.indexOf(file.getHeader());
+		headerList.get(index).setLock(true);
+		headerList.get(index).setName(clientId.toString());
 	}
 }
