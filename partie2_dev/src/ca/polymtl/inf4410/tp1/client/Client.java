@@ -236,7 +236,11 @@ public class Client {
 		try {
 			System.out.println("Synchronisaion des fichiers avec le serveur.");
 			results = distantServerStub.syncLocalDir();
-			System.out.println("Fichier(s) recupere(s).");
+			if (results.isEmpty()) {
+				System.out.println("Aucun fichier present sur le serveur.");
+			} else {
+				System.out.println("Fichier(s) recupere(s).");
+			}
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI synchroLocalDirectory()");
 			e.printStackTrace();
