@@ -22,8 +22,7 @@ public class Content implements Serializable {
 	 */
 	public Content() 
 	{
-		content = new byte[0];
-		checksum = calculateChecksum(content);
+		this(new byte[0]);
 	}
 	
 	/**
@@ -69,7 +68,12 @@ public class Content implements Serializable {
 	 * @return checksum value
 	 */
 	private byte[] calculateChecksum(byte[] content) {
-		// TODO Auto-generated method stub
-		return null;
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return md.digest(content);
 	}
 }
