@@ -113,7 +113,6 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
-		System.out.println(name + "  " + clientId + "   " + fileList.indexOf(name));
 		File file = getFile(name);
 		
 		if (file == null) {
@@ -129,7 +128,7 @@ public class Server implements ServerInterface {
 		System.out.println("Checksum associe : " + getFile(name).getContent().getChecksum().toString());
 		/* END DEBUG ZONE */
 
-		if (file.getContent().getChecksum() != checksum) {
+		if (file.getContent().getChecksum().equals(checksum)) {
 			// TODO demander si on doit faire ca ou non
 			// En gros, on peut lock que si on a la version du serveur
 			System.err.println("Checksum different, get a faire avant lock.");
