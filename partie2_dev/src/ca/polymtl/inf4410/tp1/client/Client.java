@@ -151,6 +151,7 @@ public class Client {
 
 		try {
 			distantServerStub.push(filename, content, clientId);
+			System.out.println("Le fichier \"" + filename + "\" a bien ete televerse.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI :" + e.getMessage());
 		}
@@ -285,7 +286,7 @@ public class Client {
 
 			if (!line.isEmpty()) {
 				id = Integer.parseInt(line);
-				System.out.println("Vous etes deja l'utilisateur : " + id);
+				System.out.println("Vous etes l'utilisateur : " + id);
 			} else {
 				id = new Integer(distantServerStub.generateClientId());
 				storeUserId(id);
