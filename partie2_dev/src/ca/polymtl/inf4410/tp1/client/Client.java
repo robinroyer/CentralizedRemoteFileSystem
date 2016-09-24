@@ -95,11 +95,16 @@ public class Client {
 	}
 
 	private void createFile(String filename) {
+		boolean result = false;
 		try {
-			distantServerStub.create(filename);
-			System.out.println("Fichier " + filename + " ajoute.");
+			result = distantServerStub.create(filename);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
+		}
+		if (result) {
+			System.out.println("Fichier " + filename + " ajoute.");
+		} else {
+			System.err.println("Un probleme a eu lieu pendant la creation du fichier \"" + filename + "\".");
 		}
 	}
 

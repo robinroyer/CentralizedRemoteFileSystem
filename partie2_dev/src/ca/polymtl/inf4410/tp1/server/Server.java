@@ -70,8 +70,14 @@ public class Server implements ServerInterface {
 		// Creation du fichier
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name);
-		// Ajout du fichier dans la structure de donnees specifique a la
-		// commande list
+		
+		// Check if the file already exists
+		if (fileList.contains(getFile(name))) {
+			System.out.println("Fichier \"" + name + "\" deja existant.");
+			return false;
+		}
+		
+		// Ajout du fichier dans la structure de donnees specifique a la commande list
 		headerList.add(newFile.getHeader());
 		// Ajout du fichier dans la liste des fichiers
 		System.out.println("Fichier " + name + " ajoute.");
@@ -177,8 +183,9 @@ public class Server implements ServerInterface {
 	 */
 	private File getFile(String name) {
 		for (File file : fileList) {
-			if (file.getHeader().getName().equals(name))
+			if (file.getHeader().getName().equals(name)) {
 				return file;
+			}
 		}
 		return null;
 	}
