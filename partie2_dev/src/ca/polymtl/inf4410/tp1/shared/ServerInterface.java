@@ -4,6 +4,13 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+/**
+ * Server interface : contains the signature of all the methods we must
+ * implement on the server side.
+ * 
+ * @author Jeremy
+ *
+ */
 public interface ServerInterface extends Remote {
 	/**
 	 * Generate a client id

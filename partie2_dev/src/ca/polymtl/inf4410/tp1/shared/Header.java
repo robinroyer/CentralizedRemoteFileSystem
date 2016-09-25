@@ -2,14 +2,33 @@ package ca.polymtl.inf4410.tp1.shared;
 
 import java.io.Serializable;
 
+/**
+ * Classe Header. Done to store the classic information about a file. Using
+ * headers is easier and make the transfert on the network less expensive.
+ * 
+ * @author Jeremy
+ *
+ */
 public class Header implements Serializable {
 
 	/**
-	 * 
+	 * Best practice for every class implementing Serializable.
 	 */
 	private static final long serialVersionUID = -3884750658586381809L;
+	
+	/**
+	 * The name of the file.
+	 */
 	private String name;
+	
+	/**
+	 * The cliend id owner of the file.
+	 */
 	private Integer owner;
+	
+	/**
+	 * If the file is locked, the value is true.
+	 */
 	private boolean lock;
 
 	/**

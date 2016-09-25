@@ -12,18 +12,50 @@ import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
+/**
+ * Server class. Represent the remove server in our project.
+ * 
+ * @author Jeremy
+ *
+ */
 public class Server implements ServerInterface {
 
+	/**
+	 * Main to run the server. No args required.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.run();
 	}
 
+	/**
+	 * The list of the known clients.
+	 */
 	private ArrayList<Integer> clientsId;
+
+	/**
+	 * A data structure which contains all the information about the file which
+	 * are locked and who locked them.
+	 */
 	private HashMap<String, Integer> filesLockers;
+
+	/**
+	 * A data structure which contains all the file available on the server.
+	 */
 	private ArrayList<File> fileList;
+
+	/**
+	 * A data structure to store all the header of each file. This data
+	 * structure has been done to limit the amount of data send by the network
+	 * for the list command for example.
+	 */
 	private ArrayList<Header> headerList;
 
+	/**
+	 * Constructor
+	 */
 	public Server() {
 		super();
 		clientsId = new ArrayList<Integer>();
@@ -32,6 +64,9 @@ public class Server implements ServerInterface {
 		headerList = new ArrayList<Header>();
 	}
 
+	/**
+	 * Main method to run the server.
+	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
@@ -53,10 +88,10 @@ public class Server implements ServerInterface {
 
 	@Override
 	public int generateClientId() throws RemoteException {
-		// generate random id
+		// Generate random id
 		int id = (int) (Math.random() * Integer.MAX_VALUE);
 
-		// check for uniqueness of the id
+		// Check for uniqueness of the id
 		while (clientsId.contains(id)) {
 			id = (int) (Math.random() * Integer.MAX_VALUE);
 		}
@@ -67,7 +102,7 @@ public class Server implements ServerInterface {
 
 	@Override
 	public boolean create(String name) throws RemoteException {
-		// Creation du fichier
+		// Creation of the file
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name);
 
@@ -77,10 +112,8 @@ public class Server implements ServerInterface {
 			return false;
 		}
 
-		// Ajout du fichier dans la structure de donnees specifique a la
-		// commande list
+		// Add the file to the data structures
 		headerList.add(newFile.getHeader());
-		// Ajout du fichier dans la liste des fichiers
 		System.out.println("Fichier " + name + " ajoute.");
 		return fileList.add(newFile);
 	}
@@ -93,33 +126,33 @@ public class Server implements ServerInterface {
 
 	@Override
 	public ArrayList<File> syncLocalDir() throws RemoteException {
-		System.out.println("Demande de synchronisation...");
+		System.out.println("Demande de synchronisation ...");
 		return fileList;
 	}
 
 	@Override
 	public File get(String name, byte[] checksum) throws RemoteException {
-		// Recuperation du fichier cote server
+		// Get the file on the server side
 		File file = getFile(name);
 
-		// Fichier inexistant cote serveur
+		// If the file does not exist on the server side
 		if (file.equals(null)) {
-			System.out.println("Fichier \"" + name + "\" inexistant cote serveur." );
+			System.out.println("Fichier \"" + name + "\" inexistant cote serveur.");
 			return null;
 		}
 
-		// Absence de checksum, envoie du fichier au client
+		// No checksum detected, send the file to the client
 		if (checksum == null) {
 			System.out.println("Checksum non present.");
 			System.out.println("Envoie de la version cote serveur.");
 			return file;
 		}
-		
-		// Checksum identique, inutile d'envoyer le fichier
+
+		// Checksum are the same, useless to re send the file to the client
 		if (checksum.equals(file.getContent().getChecksum())) {
 			return null;
 		}
-		
+
 		return file;
 	}
 
@@ -175,7 +208,7 @@ public class Server implements ServerInterface {
 			System.out.println("Fichier \"" + name + "\" non verouille.");
 			return false;
 		}
-		
+
 		if (!locker.equals(clientId)) {
 			System.out.println("Fichier deja verouille par le client : " + locker);
 		}

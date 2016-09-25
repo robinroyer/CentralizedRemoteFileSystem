@@ -22,25 +22,62 @@ import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
+/**
+ * Client class of the project. Use to run the client side.
+ * 
+ * @author Jeremy
+ *
+ */
 public class Client {
 
+	/**
+	 * Path of the file use to store the user id.
+	 */
 	private static final String FILE_PATH = ".user";
+
+	/**
+	 * IP of the remove server
+	 */
 	private static final String REMOTE_SERVER_IP = "132.207.12.200";
+
+	/**
+	 * Exit id code in case of a cancel operation during the lock process.
+	 */
 	private static final int ID_LOCK_CANCEL = 10;
+
+	/**
+	 * Error id code in case of problem during the push process.
+	 */
 	private static final int ID_PUSH_CANCEL = -10;
+
+	/**
+	 * Exit id code in case of a cancel operation during the get process.
+	 */
 	private static final int ID_GET_CANCEL = 20;
-	private static final int ID_INVALID_ARGUMENT = 30;
+
+	/**
+	 * Error id code in case of invalid argument.
+	 */
+	private static final int ID_INVALID_ARGUMENT = -20;
+
+	/**
+	 * The distant server used for our project
+	 */
 	private ServerInterface distantServerStub = null;
 
+	/**
+	 * Main of the program. Takes on or two arguments depending on the command
+	 * you want to run.
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException {
 		Client client = new Client(REMOTE_SERVER_IP);
 
 		String action = args[0];
 		String filename = "";
 
-		// TODO: Verification des arguments
-		// TODO: Modification architecture pour run ? Surement moyen de faire
-		// plus propre et plus court !
 		switch (action) {
 		case "create":
 			filename = checkFirstArgument(args);
@@ -77,6 +114,12 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Public constructor to create a client instance.
+	 * 
+	 * @param distantServerHostname:
+	 *            the IP used to connect to the remote server
+	 */
 	public Client(String distantServerHostname) {
 		super();
 
@@ -89,6 +132,12 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Private method to load the server
+	 * 
+	 * @param hostname
+	 * @return
+	 */
 	private ServerInterface loadServerStub(String hostname) {
 		ServerInterface stub = null;
 
@@ -106,13 +155,21 @@ public class Client {
 		return stub;
 	}
 
+	/**
+	 * Private create method to create a file on the remove server.
+	 * 
+	 * @param filename:
+	 *            the name of the file you want to create
+	 */
 	private void createFile(String filename) {
 		boolean result = false;
 		try {
+			// Call on the server side
 			result = distantServerStub.create(filename);
 		} catch (RemoteException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		}
+		// Check the result of the server
 		if (result) {
 			System.out.println("Fichier " + filename + " ajoute.");
 		} else {
@@ -129,11 +186,11 @@ public class Client {
 			if (list.isEmpty()) {
 				System.out.println("Il n'y a pas encore de fichier dans la liste !");
 			} else {
-				// Display all the elemen of the list
+				// Display all the element of the list
 				for (Header h : list) {
 					System.out.println(h);
 				}
-				System.out.println(list.size() + " fichier(s)."); 
+				System.out.println(list.size() + " fichier(s).");
 			}
 		} catch (RemoteException e) {
 			System.out.println("Erreur : " + e.getMessage());
@@ -141,7 +198,7 @@ public class Client {
 	}
 
 	/**
-	 * Private method to push a local file onto the server
+	 * Private method to push a local file onto the server.
 	 * 
 	 * @param filename:
 	 *            the name of the file
@@ -162,6 +219,7 @@ public class Client {
 		}
 
 		try {
+			// Push the file on the remove server
 			distantServerStub.push(filename, content, clientId);
 			System.out.println("Le fichier \"" + filename + "\" a bien ete televerse.");
 		} catch (RemoteException e) {
@@ -210,6 +268,12 @@ public class Client {
 
 	}
 
+	/**
+	 * Private method to get a file from the server.
+	 * 
+	 * @param filename:
+	 *            the name of the file you want to get from the remote server.
+	 */
 	private void getFile(String filename) {
 		byte[] file = null;
 		byte[] checksum = null;
@@ -243,6 +307,14 @@ public class Client {
 		}
 	}
 
+	// TODO : demande si on doit get tous les fichiers mêmes ceux lock.
+	// TODO : get possible sur un fichier lock ?
+
+	/**
+	 * Private methode to synchronize your local directory with the remove
+	 * server. The server will send you all the files he has and will not check
+	 * if your local files are different or not from its version.
+	 */
 	private void synchroLocalDirectory() {
 		ArrayList<File> results = null;
 
@@ -261,6 +333,7 @@ public class Client {
 
 		try {
 			for (int i = 0; i < results.size(); i++) {
+				// Re use the GET code which is based on the same logic.
 				storeLocalFile(results.get(i));
 			}
 		} catch (FileNotFoundException e) {
@@ -271,6 +344,12 @@ public class Client {
 
 	}
 
+	/**
+	 * Private method to check if the first argument is appropriated.
+	 * 
+	 * @param args
+	 * @return
+	 */
 	private static String checkFirstArgument(String[] args) {
 		String fileName = args[1];
 		try {
@@ -283,6 +362,11 @@ public class Client {
 		return fileName;
 	}
 
+	/**
+	 * Private method to get the user id from the user.
+	 * 
+	 * @return the user id
+	 */
 	private Integer getUserId() {
 
 		Integer id = new Integer(-1);
@@ -348,7 +432,7 @@ public class Client {
 	}
 
 	/**
-	 * Private function to get the local file
+	 * Private method to get the local file
 	 * 
 	 * @param filename:
 	 *            the name of the file
@@ -368,7 +452,7 @@ public class Client {
 	}
 
 	/**
-	 * Private function to compute the checksum on the client side
+	 * Private method to compute the checksum on the client side
 	 * 
 	 * @param file:
 	 *            the file to compute the checksum
@@ -384,6 +468,14 @@ public class Client {
 		return md.digest(file);
 	}
 
+	/**
+	 * Private method to store a file locally on the client side.
+	 * 
+	 * @param file
+	 *            the file to store
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private void storeLocalFile(File file) throws FileNotFoundException, IOException {
 		FileOutputStream stream = new FileOutputStream(file.getHeader().getName());
 		stream.write(file.getContent().getContent());
