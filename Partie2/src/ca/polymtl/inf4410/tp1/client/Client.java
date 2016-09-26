@@ -281,7 +281,7 @@ public class Client {
 			System.err.println("Erreur IO : " + e.getMessage());
 		}		
 		// Inform the user that the file has been locked
-		System.out.println("Fichier verouille");
+		System.out.println("Fichier \"" + filename + "\" verouille.");
 		
 	}
 
