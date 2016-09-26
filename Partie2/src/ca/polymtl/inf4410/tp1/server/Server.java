@@ -1,12 +1,13 @@
 package ca.polymtl.inf4410.tp1.server;
 
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.NoSuchFileException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 
 import ca.polymtl.inf4410.tp1.shared.File;
@@ -106,15 +107,16 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public boolean create(String name) throws RemoteException {
+	public boolean create(String name) throws RemoteException, FileAlreadyExistsException {
 		// Creation of the file
 		System.out.println("Creation du fichier " + name + " ...");
 		File newFile = new File(name);
 
 		// Check if the file already exists
 		if (fileList.contains(getFile(name))) {
-			System.out.println("Fichier \"" + name + "\" deja existant.");
-			return false;
+			String message = "Fichier \"" + name + "\" deja existant.";
+			System.err.println(message);
+			throw new FileAlreadyExistsException(message);
 		}
 
 		// Add the file to the data structures

@@ -1,11 +1,10 @@
 package ca.polymtl.inf4410.tp1.shared;
 
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.NoSuchFileException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
-import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
-import ca.polymtl.inf4410.tp1.shared.UnpushableFileException;
 
 
 /**
@@ -30,8 +29,9 @@ public interface ServerInterface extends Remote {
 	 * @param name
 	 * @return false if the operation failed
 	 * @throws RemoteException
+	 * @throws FileAlreadyExistsException 
 	 */
-	boolean create(String name) throws RemoteException;
+	boolean create(String name) throws RemoteException, FileAlreadyExistsException;
 
 	/**
 	 * Command to ask for the list of files available on the server

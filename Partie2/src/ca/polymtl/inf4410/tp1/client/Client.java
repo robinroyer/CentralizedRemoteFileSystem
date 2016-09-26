@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
@@ -142,12 +143,12 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (ServerInterface) registry.lookup("server");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom  " + e.getMessage()
+			System.err.println("Erreur: Le nom  " + e.getMessage()
 					+ "  n est pas defini dans le registre.");
 		} catch (AccessException e) {
-			System.out.println("Erreur: " + e.getMessage());
+			System.err.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
-			System.out.println("Erreur: " + e.getMessage());
+			System.err.println("Erreur: " + e.getMessage());
 		}
 
 		return stub;
@@ -160,21 +161,18 @@ public class Client {
 	 *            : the name of the file you want to create
 	 */
 	private void createFile(String filename) {
-		boolean result = false;
+
 		try {
 			// Call on the server side
-			result = distantServerStub.create(filename);
+			distantServerStub.create(filename);
 		} catch (RemoteException e) {
-			System.out.println("Erreur: " + e.getMessage());
+			System.err.println("Erreur: " + e.getMessage());
+		} catch (FileAlreadyExistsException e) {
+			System.err.println(e.getMessage());
 		}
-		// Check the result of the server
-		if (result) {
-			System.out.println("Fichier " + filename + " ajoute.");
-		} else {
-			System.err
-					.println("Un probleme a eu lieu pendant la creation du fichier \""
-							+ filename + "\".");
-		}
+
+		System.out.println("Fichier " + filename + " ajoute.");
+
 	}
 
 	/**
@@ -194,7 +192,7 @@ public class Client {
 				System.out.println(list.size() + " fichier(s).");
 			}
 		} catch (RemoteException e) {
-			System.out.println("Erreur : " + e.getMessage());
+			System.err.println("Erreur : " + e.getMessage());
 		}
 	}
 
@@ -228,10 +226,12 @@ public class Client {
 					+ "\" a bien ete televerse.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI :" + e.getMessage());
-		} catch (UnpushableFileException ex){
-			System.err.println("Erreur UnpushableFileException :" + ex.getMessage());
-		} catch (NoSuchFileException er){
-			System.err.println("Erreur NoSuchFileException :" + er.getMessage());			
+		} catch (UnpushableFileException ex) {
+			System.err.println("Erreur UnpushableFileException :"
+					+ ex.getMessage());
+		} catch (NoSuchFileException er) {
+			System.err
+					.println("Erreur NoSuchFileException :" + er.getMessage());
 		}
 	}
 
@@ -255,7 +255,8 @@ public class Client {
 			System.out.println("Fichier non detecte en local.");
 			System.out.println("Telechargement du fichier depuis le server.");
 			try {
-				data = distantServerStub.get(filename, null).getContent().getContent();
+				data = distantServerStub.get(filename, null).getContent()
+						.getContent();
 			} catch (RemoteException re) {
 				System.err.println("Erreur RMI : " + re.getMessage());
 			}
@@ -269,20 +270,23 @@ public class Client {
 		try {
 			result = distantServerStub.lock(filename, clientId, checksum);
 			if (result != null) {
-				System.out.println("Fichier local different de la version distante.");
+				System.out
+						.println("Fichier local different de la version distante.");
 				storeLocalFile(result);
-				System.out.println("Le fichier local a ete remplace par la version du serveur.");
+				System.out
+						.println("Le fichier local a ete remplace par la version du serveur.");
 			}
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
 		} catch (UnlockableFileException e) {
-			System.err.println("Erreur UnlockableFileException : " + e.getMessage());
+			System.err.println("Erreur UnlockableFileException : "
+					+ e.getMessage());
 		} catch (IOException e) {
 			System.err.println("Erreur IO : " + e.getMessage());
-		}		
+		}
 		// Inform the user that the file has been locked
 		System.out.println("Fichier \"" + filename + "\" verouille.");
-		
+
 	}
 
 	/**
