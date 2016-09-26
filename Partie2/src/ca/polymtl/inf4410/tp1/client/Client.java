@@ -49,6 +49,11 @@ public class Client {
 	private static final int ID_PUSH_CANCEL = -10;
 	
 	/**
+	 * Error id in case of problem during the lock process.
+	 */
+	private static final int ID_LOCK_CANCEL = -40;
+	
+	/**
 	 * Error id code in case of problem during the create process.
 	 */
 	private static final int ID_CREATE_CANCEL = -30;
@@ -57,7 +62,22 @@ public class Client {
 	 * Error id code in case of problem during the RMI call process.
 	 */
 	private static final int ID_RMI_ERROR = -50;
+	
+	/**
+	 * Error IO exit code.
+	 */
+	private static final int ID_IO_ERROR = -80;
 
+	/**
+	 * Error id not bound.
+	 */
+	private static final int ID_NOT_BOUND_ERROR = -60;
+	
+	/**
+	 * Error id access.
+	 */
+	private static final int ID_ACCESS_ERROR = -70;
+	
 	/**
 	 * Exit id code in case of a cancel operation during the get process.
 	 */
@@ -80,7 +100,7 @@ public class Client {
 	 * @param args
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		Client client = new Client(REMOTE_SERVER_IP);
 
 		String action = args[0];
@@ -155,10 +175,13 @@ public class Client {
 		} catch (NotBoundException e) {
 			System.err.println("Erreur: Le nom  " + e.getMessage()
 					+ "  n est pas defini dans le registre.");
+			System.exit(ID_NOT_BOUND_ERROR);
 		} catch (AccessException e) {
 			System.err.println("Erreur: " + e.getMessage());
+			System.exit(ID_ACCESS_ERROR);
 		} catch (RemoteException e) {
 			System.err.println("Erreur: " + e.getMessage());
+			System.exit(ID_RMI_ERROR);
 		}
 
 		return stub;
@@ -201,8 +224,8 @@ public class Client {
 				for (Header h : list) {
 					System.out.println(h);
 				}
-				System.out.println(list.size() + " fichier(s).");
 			}
+			System.out.println(list.size() + " fichier(s).");
 		} catch (RemoteException e) {
 			System.err.println("Erreur : " + e.getMessage());
 		}
@@ -226,8 +249,8 @@ public class Client {
 			// Canceled if the file does not exist locally
 			System.out.println("Fichier non detecte en local.");
 			System.out
-					.println("Annulation de l'operation de televersement du fichier "
-							+ filename + ".");
+					.println("Annulation de l'operation de televersement du fichier \""
+							+ filename + "\".");
 			System.exit(ID_PUSH_CANCEL);
 		}
 
@@ -238,12 +261,14 @@ public class Client {
 					+ "\" a bien ete televerse.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI :" + e.getMessage());
+			System.exit(ID_RMI_ERROR);
 		} catch (UnpushableFileException ex) {
-			System.err.println("Erreur UnpushableFileException :"
-					+ ex.getMessage());
+			System.err.println(ex.getMessage());
+			System.exit(ID_PUSH_CANCEL);
 		} catch (NoSuchFileException er) {
 			System.err
 					.println("Erreur NoSuchFileException :" + er.getMessage());
+			System.exit(ID_PUSH_CANCEL);
 		}
 	}
 
@@ -262,8 +287,7 @@ public class Client {
 		try {
 			data = getLocalFile(filename);
 		} catch (NoSuchFileException e) {
-			// Abort if the file is not present localy (avoid a lock
-			// unloackable)
+			// Vérification de la présence du fichier local
 			System.out.println("Fichier non detecte en local.");
 			System.out.println("Telechargement du fichier depuis le server.");
 			try {
@@ -271,6 +295,7 @@ public class Client {
 						.getContent();
 			} catch (RemoteException re) {
 				System.err.println("Erreur RMI : " + re.getMessage());
+				System.exit(ID_RMI_ERROR);
 			}
 		}
 
@@ -290,12 +315,15 @@ public class Client {
 			}
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
+			System.exit(ID_RMI_ERROR);
 		} catch (UnlockableFileException e) {
-			System.err.println("Erreur UnlockableFileException : "
-					+ e.getMessage());
+			System.err.println(e.getMessage());
+			System.exit(ID_LOCK_CANCEL);
 		} catch (IOException e) {
 			System.err.println("Erreur IO : " + e.getMessage());
+			System.exit(ID_IO_ERROR);
 		}
+		
 		// Inform the user that the file has been locked
 		System.out.println("Fichier \"" + filename + "\" verouille.");
 
@@ -327,9 +355,8 @@ public class Client {
 			System.out.println("Fichier " + result.getHeader().getName()
 					+ " recupere.");
 		} catch (RemoteException e) {
-			System.err.println("Erreur RMI getFile(" + filename + ","
-					+ checksum + ").");
-			e.printStackTrace();
+			System.err.println("Erreur RMI : " + e.getMessage());
+			System.exit(ID_RMI_ERROR);
 		} catch (NullPointerException e) {
 			System.err.println("Le fichier " + filename
 					+ " n'existe pas cote serveur.");
@@ -342,6 +369,7 @@ public class Client {
 			storeLocalFile(result);
 		} catch (IOException e) {
 			System.err.println("IOE Exception : " + e.getMessage());
+			System.exit(ID_IO_ERROR);
 		}
 	}
 
@@ -362,8 +390,8 @@ public class Client {
 				System.out.println("Fichier(s) recupere(s).");
 			}
 		} catch (RemoteException e) {
-			System.err.println("Erreur RMI synchroLocalDirectory()");
-			e.printStackTrace();
+			System.err.println("Erreur RMI : " + e.getMessage());
+			System.exit(ID_RMI_ERROR);
 		}
 
 		try {
@@ -371,10 +399,9 @@ public class Client {
 				// Re use the GET code which is based on the same logic.
 				storeLocalFile(results.get(i));
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(ID_IO_ERROR);
 		}
 
 	}
@@ -392,7 +419,8 @@ public class Client {
 				throw new IllegalArgumentException();
 			}
 		} catch (IllegalArgumentException e) {
-			System.err.println("Invalid argument: please check readme.txt");
+			System.err.println("Argument(s) invalide(s). Lisez le fichier README.txt.");
+			System.exit(ID_INVALID_ARGUMENT);
 		}
 		return fileName;
 	}
@@ -484,6 +512,7 @@ public class Client {
 			throw new NoSuchFileException("Fichier inexistant en local.");
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(ID_IO_ERROR);
 		}
 		return file;
 	}
@@ -513,8 +542,7 @@ public class Client {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private void storeLocalFile(File file) throws FileNotFoundException,
-			IOException {
+	private void storeLocalFile(File file) throws IOException {
 		FileOutputStream stream = new FileOutputStream(file.getHeader()
 				.getName());
 		stream.write(file.getContent().getContent());

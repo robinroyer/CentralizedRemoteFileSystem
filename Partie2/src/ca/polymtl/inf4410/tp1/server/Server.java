@@ -77,14 +77,12 @@ public class Server implements ServerInterface {
 		}
 
 		try {
-			ServerInterface stub = (ServerInterface) UnicastRemoteObject
-					.exportObject(this, 0);
+			ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(this, 0);
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind("server", stub);
 			System.out.println("Server ready.");
 		} catch (ConnectException e) {
-			System.err
-					.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
+			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -144,8 +142,7 @@ public class Server implements ServerInterface {
 
 		// If the file does not exist on the server side
 		if (file.equals(null)) {
-			System.out.println("Fichier \"" + name
-					+ "\" inexistant cote serveur.");
+			System.out.println("Fichier \"" + name + "\" inexistant cote serveur.");
 			return null;
 		}
 
@@ -165,9 +162,9 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public File lock(String name, Integer clientId, byte[] checksum) throws RemoteException, UnlockableFileException, NoSuchFileException{
-		System.out.println("Essai de veouillage du fichier " + name
-				+ " par le client : " + clientId);
+	public File lock(String name, Integer clientId, byte[] checksum)
+			throws RemoteException, UnlockableFileException, NoSuchFileException {
+		System.out.println("Essai de veouillage du fichier " + name + " par le client : " + clientId);
 		// Check if the file exists
 		File file = getFile(name);
 		if (file == null) {
@@ -180,11 +177,9 @@ public class Server implements ServerInterface {
 			Integer locker = filesLockers.get(name);
 			System.out.println("Fichier deja verouille par le client : " + locker);
 			if (clientId.equals(locker)) {
-				throw new UnlockableFileException(
-						"Vous avez deja verouille le fichier", name);
+				throw new UnlockableFileException("Vous avez deja verouille le fichier", name);
 			} else {
-				throw new UnlockableFileException(
-						"Verouillage du fichier impossible.", name);
+				throw new UnlockableFileException("Verouillage du fichier impossible.", name);
 			}
 		}
 
@@ -196,8 +191,7 @@ public class Server implements ServerInterface {
 		// Update files/lockers hashmap
 		filesLockers.put(name, clientId);
 
-		System.out.println("Fichier " + name + " verouille par client "
-				+ clientId);
+		System.out.println("Fichier " + name + " verouille par client " + clientId);
 
 		// Check if the checksum of the local file if different from the remote
 		// file
@@ -211,14 +205,14 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public boolean push(String name, byte[] content, Integer clientId) throws RemoteException, NoSuchFileException, UnpushableFileException {
+	public boolean push(String name, byte[] content, Integer clientId)
+			throws RemoteException, NoSuchFileException, UnpushableFileException {
 		System.out.println("Essaie de push du fichier \"" + name + "\" par le client " + clientId + " ...");
 		File file = getFile(name);
 
 		// Check if the file exist
 		if (file == null) {
-			System.out.println("Fichier \"" + name
-					+ "\" inexistant cote serveur.");
+			System.out.println("Fichier \"" + name + "\" inexistant cote serveur.");
 			throw new NoSuchFileException(name);
 		}
 
@@ -230,14 +224,13 @@ public class Server implements ServerInterface {
 		}
 
 		if (!locker.equals(clientId)) {
-			System.out.println("Fichier deja verouille par le client : "
-					+ locker);
-			throw new UnpushableFileException("Vous n'avez pas le lock sur le fichier, le lock est possede par le client: " + clientId, name);
+			System.out.println("Fichier deja verouille par le client : " + locker);
+			throw new UnpushableFileException(
+					"Vous n'avez pas le lock sur le fichier, le lock est possede par le client : " + clientId, name);
 		}
 
 		// Change the content of the file and update the header
-		System.out.println("Fichier \"" + name
-				+ "\" en cours de modification ...");
+		System.out.println("Fichier \"" + name + "\" en cours de modification ...");
 		file.getContent().setContent(content);
 		file.getHeader().setLock(false);
 
