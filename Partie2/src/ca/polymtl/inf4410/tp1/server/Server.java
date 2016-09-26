@@ -224,13 +224,13 @@ public class Server implements ServerInterface {
 		Integer locker = filesLockers.get(name);
 		if (locker == null) {
 			System.out.println("Fichier \"" + name + "\" non verouille.");
-			throw new UnpushableFileException("Error", name);
+			throw new UnpushableFileException("Le fichier n'est pas lock", name);
 		}
 
 		if (!locker.equals(clientId)) {
 			System.out.println("Fichier deja verouille par le client : "
 					+ locker);
-			throw new UnpushableFileException("Error", name);
+			throw new UnpushableFileException("Vous n'avez pas le lock sur le fichier, le lock est possede par le client: " + clientId, name);
 		}
 
 		// Change the content of the file and update the header
