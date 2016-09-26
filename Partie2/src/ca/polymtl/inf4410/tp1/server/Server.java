@@ -17,7 +17,7 @@ import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
  * Server class. Represent the remove server in our project.
  * 
  * @author Jeremy
- *
+ * 
  */
 public class Server implements ServerInterface {
 
@@ -74,12 +74,14 @@ public class Server implements ServerInterface {
 		}
 
 		try {
-			ServerInterface stub = (ServerInterface) UnicastRemoteObject.exportObject(this, 0);
+			ServerInterface stub = (ServerInterface) UnicastRemoteObject
+					.exportObject(this, 0);
 			Registry registry = LocateRegistry.getRegistry();
 			registry.rebind("server", stub);
 			System.out.println("Server ready.");
 		} catch (ConnectException e) {
-			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
+			System.err
+					.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -138,7 +140,8 @@ public class Server implements ServerInterface {
 
 		// If the file does not exist on the server side
 		if (file.equals(null)) {
-			System.out.println("Fichier \"" + name + "\" inexistant cote serveur.");
+			System.out.println("Fichier \"" + name
+					+ "\" inexistant cote serveur.");
 			return null;
 		}
 
@@ -158,7 +161,10 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public File lock(String name, Integer clientId, byte[] checksum) throws RemoteException, UnlockableFileException {
+	public File lock(String name, Integer clientId, byte[] checksum)
+			throws RemoteException, UnlockableFileException {
+		System.out.println("Essai de veouillage du fichier " + name
+				+ " par le client : " + clientId);
 		// Check if the file exists
 		File file = getFile(name);
 		if (file == null) {
@@ -168,7 +174,15 @@ public class Server implements ServerInterface {
 
 		// Check if the file is already locked
 		if (filesLockers.containsKey(name)) {
-			throw new UnlockableFileException("Error:", name);
+			Integer locker = filesLockers.get(name);
+			System.out.println("Fichier deja verouille par le client : " + locker);
+			if (clientId.equals(locker)) {
+				throw new UnlockableFileException(
+						"Vous avez deja verouille le fichier", name);
+			} else {
+				throw new UnlockableFileException(
+						"Verouillage du fichier impossible.", name);
+			}
 		}
 
 		// Lock the file
@@ -179,26 +193,31 @@ public class Server implements ServerInterface {
 		// Update files/lockers hashmap
 		filesLockers.put(name, clientId);
 
-		System.out.println("Fichier " + name + " verouille par client " + clientId);
-		
-		// Check if the checksum of the local file if different from the remote file
+		System.out.println("Fichier " + name + " verouille par client "
+				+ clientId);
+
+		// Check if the checksum of the local file if different from the remote
+		// file
 		if (!file.getContent().getChecksum().equals(checksum)) {
 			System.out.println("Checksum different, get a faire avant lock.");
 			System.out.println("Envoie du fichier au client.");
 			return getFile(name);
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public boolean push(String name, byte[] content, Integer clientId) throws RemoteException {
-		System.out.println("Essaie de push du fichier \"" + name + "\" par le client " + clientId + " ...");
+	public boolean push(String name, byte[] content, Integer clientId)
+			throws RemoteException {
+		System.out.println("Essaie de push du fichier \"" + name
+				+ "\" par le client " + clientId + " ...");
 		File file = getFile(name);
 
 		// Check if the file exist
 		if (file == null) {
-			System.out.println("Fichier \"" + name + "\" inexistant cote serveur.");
+			System.out.println("Fichier \"" + name
+					+ "\" inexistant cote serveur.");
 			return false;
 		}
 
@@ -210,11 +229,13 @@ public class Server implements ServerInterface {
 		}
 
 		if (!locker.equals(clientId)) {
-			System.out.println("Fichier deja verouille par le client : " + locker);
+			System.out.println("Fichier deja verouille par le client : "
+					+ locker);
 		}
 
 		// Change the content of the file and update the header
-		System.out.println("Fichier \"" + name + "\" en cours de modification ...");
+		System.out.println("Fichier \"" + name
+				+ "\" en cours de modification ...");
 		file.getContent().setContent(content);
 		file.getHeader().setLock(false);
 
@@ -227,8 +248,8 @@ public class Server implements ServerInterface {
 	/**
 	 * Returns the appropriate file according to the param name
 	 * 
-	 * @param name:
-	 *            the name of the file
+	 * @param name
+	 *            : the name of the file
 	 * @return the file or null if it does not exist
 	 */
 	private File getFile(String name) {
@@ -243,12 +264,12 @@ public class Server implements ServerInterface {
 	/**
 	 * Update the header list according to its parameters
 	 * 
-	 * @param locker:
-	 *            true if we need to lock the file, false if unlock
-	 * @param file:
-	 *            the file to set
-	 * @param clientId:
-	 *            the id of the user
+	 * @param locker
+	 *            : true if we need to lock the file, false if unlock
+	 * @param file
+	 *            : the file to set
+	 * @param clientId
+	 *            : the id of the user
 	 */
 	private void updateHeaderList(boolean locker, File file, Integer clientId) {
 		int index = headerList.indexOf(file.getHeader());

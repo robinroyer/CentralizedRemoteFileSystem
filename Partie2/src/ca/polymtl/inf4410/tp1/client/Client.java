@@ -264,7 +264,9 @@ public class Client {
 		try {
 			result = distantServerStub.lock(filename, clientId, checksum);
 			if (result != null) {
+				System.out.println("Fichier local different de la version distante.");
 				storeLocalFile(result);
+				System.out.println("Le fichier local a ete remplace par la version du serveur.");
 			}
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
@@ -273,6 +275,9 @@ public class Client {
 		} catch (IOException e) {
 			System.err.println("Erreur IO : " + e.getMessage());
 		}
+		
+		// Inform the user that the file has been locked
+		System.out.println("Fichier verouille");
 	}
 
 	/**
