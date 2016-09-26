@@ -229,9 +229,9 @@ public class Client {
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI :" + e.getMessage());
 		} catch (UnpushableFileException ex){
-			System.err.println("Erreur RMI :" + ex.getMessage());
+			System.err.println("Erreur UnpushableFileException :" + ex.getMessage());
 		} catch (NoSuchFileException er){
-			System.err.println("Erreur RMI :" + er.getMessage());			
+			System.err.println("Erreur NoSuchFileException :" + er.getMessage());			
 		}
 	}
 
@@ -276,12 +276,13 @@ public class Client {
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
 		} catch (UnlockableFileException e) {
-			System.err.println(e);
+			System.err.println("Erreur UnlockableFileException : " + e.getMessage());
 		} catch (IOException e) {
-			System.err.println("Erreur IO : " + e.getMessage());		
+			System.err.println("Erreur IO : " + e.getMessage());
+		}		
 		// Inform the user that the file has been locked
 		System.out.println("Fichier verouille");
-		} 
+		
 	}
 
 	/**
