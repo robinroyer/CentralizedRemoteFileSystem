@@ -164,7 +164,6 @@ public class Server implements ServerInterface {
 
 	@Override
 	public File lock(String name, Integer clientId, byte[] checksum) throws RemoteException, UnlockableFileException, NoSuchFileException{
-			throws RemoteException, UnlockableFileException {
 		System.out.println("Essai de veouillage du fichier " + name
 				+ " par le client : " + clientId);
 		// Check if the file exists
