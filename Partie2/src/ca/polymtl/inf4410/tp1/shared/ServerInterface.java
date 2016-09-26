@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * implement on the server side.
  * 
  * @author Jeremy
- *
+ * 
  */
 public interface ServerInterface extends Remote {
 	/**
@@ -67,10 +67,11 @@ public interface ServerInterface extends Remote {
 	 *            the client id of the client
 	 * @param checksum
 	 *            the checksum of the local file of the client
-	 * @return false if the operation failed
+	 * @return null if the client has the file
 	 * @throws RemoteException
 	 */
-	boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException;
+	File lock(String name, Integer clientId, byte[] checksum)
+			throws RemoteException, UnlockableFileException;
 
 	/**
 	 * Command to push a local file to the remote server
@@ -83,6 +84,9 @@ public interface ServerInterface extends Remote {
 	 *            the client id of the client
 	 * @return false if the operation failed
 	 * @throws RemoteException
+	 * @throws UnlockableFileException
+	 *             if the file is already locked by another client.
 	 */
-	boolean push(String name, byte[] content, Integer clientId) throws RemoteException;
+	boolean push(String name, byte[] content, Integer clientId)
+			throws RemoteException;
 }

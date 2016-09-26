@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
+import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
 
 /**
  * Client class of the project. Use to run the client side.
@@ -253,18 +254,19 @@ public class Client {
 		byte[] checksum = computeChecksum(data);
 
 		// Lock the file
-		boolean result = false;
+		File result = null;
 		try {
 			result = distantServerStub.lock(filename, clientId, checksum);
+			if (result != null) {
+				storeLocalFile(result);
+			}
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
-		}
-
-		if (result) {
-			System.out.println("Fichier \"" + filename + "\" verouille.");
-		} else {
-			System.out.println("Fichier \"" + filename + "\" impossible a verouille.");
-		}
+		} catch (UnlockableFileException e) {
+			System.err.println(e);
+		} catch (IOException e) {
+			System.err.println("Erreur IO : " + e.getMessage());
+		} 
 
 	}
 
@@ -307,11 +309,8 @@ public class Client {
 		}
 	}
 
-	// TODO : demande si on doit get tous les fichiers mêmes ceux lock.
-	// TODO : get possible sur un fichier lock ?
-
 	/**
-	 * Private methode to synchronize your local directory with the remove
+	 * Private method to synchronize your local directory with the remove
 	 * server. The server will send you all the files he has and will not check
 	 * if your local files are different or not from its version.
 	 */

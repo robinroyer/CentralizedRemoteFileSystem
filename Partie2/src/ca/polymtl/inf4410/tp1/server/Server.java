@@ -11,6 +11,7 @@ import java.util.HashMap;
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
+import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
 
 /**
  * Server class. Represent the remove server in our project.
@@ -157,26 +158,17 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public boolean lock(String name, Integer clientId, byte[] checksum) throws RemoteException {
+	public File lock(String name, Integer clientId, byte[] checksum) throws RemoteException, UnlockableFileException {
 		// Check if the file exists
 		File file = getFile(name);
 		if (file == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
-			return false;
+			return null;
 		}
 
 		// Check if the file is already locked
 		if (filesLockers.containsKey(name)) {
-			System.err.println("Le fichier " + name + " est deja verouille.");
-			return false;
-		}
-
-		// Check the checksum of the local file and the remote file
-		if (file.getContent().getChecksum().equals(checksum)) {
-			// TODO demander si on doit faire ca ou non
-			// En gros, on peut lock que si on a la version du serveur
-			System.err.println("Checksum different, get a faire avant lock.");
-			return false;
+			throw new UnlockableFileException("Error:", name);
 		}
 
 		// Lock the file
@@ -188,7 +180,15 @@ public class Server implements ServerInterface {
 		filesLockers.put(name, clientId);
 
 		System.out.println("Fichier " + name + " verouille par client " + clientId);
-		return true;
+		
+		// Check if the checksum of the local file if different from the remote file
+		if (!file.getContent().getChecksum().equals(checksum)) {
+			System.out.println("Checksum different, get a faire avant lock.");
+			System.out.println("Envoie du fichier au client.");
+			return getFile(name);
+		}
+		
+		return null;
 	}
 
 	@Override
