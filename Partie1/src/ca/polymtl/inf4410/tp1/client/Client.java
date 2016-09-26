@@ -9,26 +9,57 @@ import java.rmi.registry.Registry;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
 public class Client {
-	public static void main(String[] args) {
-		String distantHostname = null;
-		Double powerOfTen = 0.;
 
-		if (args.length > 0) {
-			distantHostname = args[0];
-			powerOfTen = Double.parseDouble(args[1]);
-		}
+	private static final double POWER_OF_TEN = 10.;
+	private static final int INVALID_ARGUMENTS = -10;
 
-		Client client = new Client(distantHostname, new byte[(int)Math.pow(10., powerOfTen)]);
-		client.run();
-	}
-
-	FakeServer localServer = null; // Pour tester la latence d un appel de
-									// fonction normal.
+	private FakeServer localServer = null;
 	private ServerInterface localServerStub = null;
 	private ServerInterface distantServerStub = null;
 	private byte[] bytesArrayArgument = null;
 
-	/*public Client(String distantServerHostname) {
+	/**
+	 * Main client program, run the client
+	 * 
+	 * @param args
+	 *            args[0] must be the ip of the distant server and args[1] must
+	 *            be a number between 0 and 8. It represents the 10^x bytes
+	 *            which will be use to call the remote method to the server.
+	 */
+	public static void main(String[] args) {
+		String distantHostname = null;
+		Double powerOfTen = 0.;
+
+		if (args.length == 2) {
+			distantHostname = args[0];
+			powerOfTen = Double.parseDouble(args[1]);
+		} else {
+			System.err.println("Le programme a besoin de deux arguments :");
+			System.err
+					.println("L'IP du serveur distant et la puissance de 10 que vous souhaitez passe en argugment.");
+			System.err.println("Call: ./client [IP] [puissance_de_dix]");
+			System.exit(INVALID_ARGUMENTS);
+		}
+
+		// Quick check for the second argument
+		if (powerOfTen < 0) {
+			System.err.println("Le deuxieme argument doit être positif.");
+			System.exit(INVALID_ARGUMENTS);
+		}
+
+		// Creation of the custom client
+		Client client = new Client(distantHostname, new byte[(int) Math.pow(
+				POWER_OF_TEN, powerOfTen)]);
+		client.run();
+	}
+
+	/**
+	 * Constructor with
+	 * 
+	 * @param distantServerHostname
+	 *            : the IP of the distant server
+	 */
+	public Client(String distantServerHostname) {
 		super();
 
 		if (System.getSecurityManager() == null) {
@@ -41,8 +72,8 @@ public class Client {
 		if (distantServerHostname != null) {
 			distantServerStub = loadServerStub(distantServerHostname);
 		}
-	}*/
-	
+	}
+
 	public Client(String distantServerHostname, byte[] bytes) {
 		super();
 
@@ -60,14 +91,13 @@ public class Client {
 	}
 
 	private void run() {
-		for(int i = 0; i<10; i++)
-		{
+		for (int i = 0; i < 10; i++) {
 			appelNormal();
-				
+
 			if (localServerStub != null) {
 				appelRMILocal();
 			}
-	
+
 			if (distantServerStub != null) {
 				appelRMIDistant();
 			}
@@ -95,6 +125,7 @@ public class Client {
 	private void appelNormal() {
 		long start = System.nanoTime();
 		int result = localServer.execute(4, 7);
+		localServer.printByteArraySize(bytesArrayArgument);
 		long end = System.nanoTime();
 
 		System.out.println("Temps ecoule appel normal: " + (end - start)
