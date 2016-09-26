@@ -47,6 +47,16 @@ public class Client {
 	 * Error id code in case of problem during the push process.
 	 */
 	private static final int ID_PUSH_CANCEL = -10;
+	
+	/**
+	 * Error id code in case of problem during the create process.
+	 */
+	private static final int ID_CREATE_CANCEL = -30;
+	
+	/**
+	 * Error id code in case of problem during the RMI call process.
+	 */
+	private static final int ID_RMI_ERROR = -50;
 
 	/**
 	 * Exit id code in case of a cancel operation during the get process.
@@ -167,8 +177,10 @@ public class Client {
 			distantServerStub.create(filename);
 		} catch (RemoteException e) {
 			System.err.println("Erreur: " + e.getMessage());
+			System.exit(ID_RMI_ERROR);
 		} catch (FileAlreadyExistsException e) {
 			System.err.println(e.getMessage());
+			System.exit(ID_CREATE_CANCEL);
 		}
 
 		System.out.println("Fichier " + filename + " ajoute.");
