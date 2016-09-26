@@ -8,14 +8,44 @@ import java.rmi.registry.Registry;
 
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
+/**
+ * Classe Client. In this project this class represents the client side. This
+ * program will try to connect itself to the remote server. This program is done
+ * to test the different performances linked with RMI.
+ * 
+ * @author Jeremy
+ * 
+ */
 public class Client {
 
+	/**
+	 * Const power of ten.
+	 */
 	private static final double POWER_OF_TEN = 10.;
+
+	/**
+	 * Invalid arguments error code.
+	 */
 	private static final int INVALID_ARGUMENTS = -10;
 
+	/**
+	 * The fake local server instance (normal call)
+	 */
 	private FakeServer localServer = null;
+
+	/**
+	 * The local server instance (RMI local call)
+	 */
 	private ServerInterface localServerStub = null;
+
+	/**
+	 * The remote server instance (RMI classic call)
+	 */
 	private ServerInterface distantServerStub = null;
+
+	/**
+	 * The array of bytes to try the influence of arguments size on RMI call
+	 */
 	private byte[] bytesArrayArgument = null;
 
 	/**
@@ -30,6 +60,7 @@ public class Client {
 		String distantHostname = null;
 		Double powerOfTen = 0.;
 
+		// Little code to check arguments
 		if (args.length == 2) {
 			distantHostname = args[0];
 			powerOfTen = Double.parseDouble(args[1]);
@@ -57,7 +88,7 @@ public class Client {
 	 * Constructor with
 	 * 
 	 * @param distantServerHostname
-	 *            : the IP of the distant server
+	 *            the IP of the remote server
 	 */
 	public Client(String distantServerHostname) {
 		super();
@@ -74,6 +105,14 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Constructor with:
+	 * 
+	 * @param distantServerHostname
+	 *            the IP of the remote server
+	 * @param bytes
+	 *            a table of bytes
+	 */
 	public Client(String distantServerHostname, byte[] bytes) {
 		super();
 
@@ -90,20 +129,31 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Private method which will run the client. The goal is to call each
+	 * different server instance to see the difference of performances.
+	 */
 	private void run() {
-		for (int i = 0; i < 10; i++) {
-			appelNormal();
+		// Normal call
+		appelNormal();
 
-			if (localServerStub != null) {
-				appelRMILocal();
-			}
+		// Local RMI call
+		if (localServerStub != null) {
+			appelRMILocal();
+		}
 
-			if (distantServerStub != null) {
-				appelRMIDistant();
-			}
+		// Remote RMI call
+		if (distantServerStub != null) {
+			appelRMIDistant();
 		}
 	}
 
+	/**
+	 * Private method to load servers configuration.
+	 * 
+	 * @param hostname
+	 * @return
+	 */
 	private ServerInterface loadServerStub(String hostname) {
 		ServerInterface stub = null;
 
@@ -122,6 +172,9 @@ public class Client {
 		return stub;
 	}
 
+	/**
+	 * Private method for the normal local call
+	 */
 	private void appelNormal() {
 		long start = System.nanoTime();
 		int result = localServer.execute(4, 7);
@@ -133,6 +186,9 @@ public class Client {
 		System.out.println("Resultat appel normal: " + result);
 	}
 
+	/**
+	 * Private method for the RMI local call
+	 */
 	private void appelRMILocal() {
 		try {
 			long start = System.nanoTime();
@@ -148,6 +204,9 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Private method for the remote RMI call
+	 */
 	private void appelRMIDistant() {
 		try {
 			long start = System.nanoTime();

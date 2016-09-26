@@ -8,17 +8,36 @@ import java.rmi.server.UnicastRemoteObject;
 
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 
+/**
+ * Class Server. This class represents our servers. Instances of this class will
+ * just wait for client calls.
+ * 
+ * @author Jeremy
+ * 
+ */
 public class Server implements ServerInterface {
 
+	/**
+	 * Main entry of the program, create a server and run it.
+	 * 
+	 * @param args
+	 *            unrequired
+	 */
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.run();
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public Server() {
 		super();
 	}
 
+	/**
+	 * Private method which run the server.
+	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
@@ -41,10 +60,6 @@ public class Server implements ServerInterface {
 		}
 	}
 
-	/*
-	 * Methode accessible par RMI. Additionne les deux nombres passes en
-	 * parametre.
-	 */
 	@Override
 	public int execute(int a, int b) throws RemoteException {
 		return a + b;
@@ -52,12 +67,12 @@ public class Server implements ServerInterface {
 
 	@Override
 	public void print(String message) throws RemoteException {
-		System.out.println(message);	
+		System.out.println(message);
 	}
 
 	@Override
 	public void printByteArraySize(byte[] bytes) throws RemoteException {
 		System.out.println("Size of the array in parameter: " + bytes.length);
-		
+
 	}
 }
