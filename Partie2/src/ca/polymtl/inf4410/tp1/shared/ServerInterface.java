@@ -2,7 +2,11 @@ package ca.polymtl.inf4410.tp1.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
+import ca.polymtl.inf4410.tp1.shared.UnpushableFileException;
+
 
 /**
  * Server interface : contains the signature of all the methods we must
@@ -71,7 +75,7 @@ public interface ServerInterface extends Remote {
 	 * @throws RemoteException
 	 */
 	File lock(String name, Integer clientId, byte[] checksum)
-			throws RemoteException, UnlockableFileException;
+			throws RemoteException, UnlockableFileException, NoSuchFileException;
 
 	/**
 	 * Command to push a local file to the remote server
@@ -88,5 +92,5 @@ public interface ServerInterface extends Remote {
 	 *             if the file is already locked by another client.
 	 */
 	boolean push(String name, byte[] content, Integer clientId)
-			throws RemoteException;
+			throws RemoteException, NoSuchFileException, UnpushableFileException;
 }

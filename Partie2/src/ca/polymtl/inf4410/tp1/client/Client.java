@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
+import ca.polymtl.inf4410.tp1.shared.UnpushableFileException;
 import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
 
 /**
@@ -227,6 +228,10 @@ public class Client {
 					+ "\" a bien ete televerse.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI :" + e.getMessage());
+		} catch (UnpushableFileException ex){
+			System.err.println("Erreur RMI :" + ex.getMessage());
+		} catch (NoSuchFileException er){
+			System.err.println("Erreur RMI :" + er.getMessage());			
 		}
 	}
 
@@ -273,11 +278,10 @@ public class Client {
 		} catch (UnlockableFileException e) {
 			System.err.println(e);
 		} catch (IOException e) {
-			System.err.println("Erreur IO : " + e.getMessage());
-		}
-		
+			System.err.println("Erreur IO : " + e.getMessage());		
 		// Inform the user that the file has been locked
 		System.out.println("Fichier verouille");
+		} 
 	}
 
 	/**

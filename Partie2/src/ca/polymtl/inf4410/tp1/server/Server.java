@@ -6,12 +6,14 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 
 import ca.polymtl.inf4410.tp1.shared.File;
 import ca.polymtl.inf4410.tp1.shared.Header;
 import ca.polymtl.inf4410.tp1.shared.ServerInterface;
 import ca.polymtl.inf4410.tp1.shared.UnlockableFileException;
+import ca.polymtl.inf4410.tp1.shared.UnpushableFileException;
 
 /**
  * Server class. Represent the remove server in our project.
@@ -161,7 +163,7 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public File lock(String name, Integer clientId, byte[] checksum)
+	public File lock(String name, Integer clientId, byte[] checksum) throws RemoteException, UnlockableFileException, NoSuchFileException{
 			throws RemoteException, UnlockableFileException {
 		System.out.println("Essai de veouillage du fichier " + name
 				+ " par le client : " + clientId);
@@ -169,7 +171,7 @@ public class Server implements ServerInterface {
 		File file = getFile(name);
 		if (file == null) {
 			System.err.println("Le fichier " + name + " n'existe pas.");
-			return null;
+			throw new NoSuchFileException(name);
 		}
 
 		// Check if the file is already locked
@@ -208,29 +210,28 @@ public class Server implements ServerInterface {
 	}
 
 	@Override
-	public boolean push(String name, byte[] content, Integer clientId)
-			throws RemoteException {
-		System.out.println("Essaie de push du fichier \"" + name
-				+ "\" par le client " + clientId + " ...");
+	public boolean push(String name, byte[] content, Integer clientId) throws RemoteException, NoSuchFileException, UnpushableFileException {
+		System.out.println("Essaie de push du fichier \"" + name + "\" par le client " + clientId + " ...");
 		File file = getFile(name);
 
 		// Check if the file exist
 		if (file == null) {
 			System.out.println("Fichier \"" + name
 					+ "\" inexistant cote serveur.");
-			return false;
+			throw new NoSuchFileException(name);
 		}
 
 		// Check if the file has been locked before the push
 		Integer locker = filesLockers.get(name);
 		if (locker == null) {
 			System.out.println("Fichier \"" + name + "\" non verouille.");
-			return false;
+			throw new UnpushableFileException("Error", name);
 		}
 
 		if (!locker.equals(clientId)) {
 			System.out.println("Fichier deja verouille par le client : "
 					+ locker);
+			throw new UnpushableFileException("Error", name);
 		}
 
 		// Change the content of the file and update the header
