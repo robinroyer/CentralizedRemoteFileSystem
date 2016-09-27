@@ -41,7 +41,7 @@ public class Client {
 	/**
 	 * IP of the remove server
 	 */
-	private static final String REMOTE_SERVER_IP = "132.207.12.200";
+	private static final String REMOTE_SERVER_IP = "127.0.0.1";
 
 	/**
 	 * Error id code in case of problem during the push process.
