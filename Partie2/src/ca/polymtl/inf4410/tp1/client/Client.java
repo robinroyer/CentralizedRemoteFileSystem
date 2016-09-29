@@ -44,25 +44,30 @@ public class Client {
 	private static final String REMOTE_SERVER_IP = "127.0.0.1";
 
 	/**
+	 * Success id code, the program ended in a good way.
+	 */
+	private static final int EXIT_SUCCESS = 0;
+
+	/**
 	 * Error id code in case of problem during the push process.
 	 */
 	private static final int ID_PUSH_CANCEL = -10;
-	
+
 	/**
 	 * Error id in case of problem during the lock process.
 	 */
 	private static final int ID_LOCK_CANCEL = -40;
-	
+
 	/**
 	 * Error id code in case of problem during the create process.
 	 */
 	private static final int ID_CREATE_CANCEL = -30;
-	
+
 	/**
 	 * Error id code in case of problem during the RMI call process.
 	 */
 	private static final int ID_RMI_ERROR = -50;
-	
+
 	/**
 	 * Error IO exit code.
 	 */
@@ -72,12 +77,12 @@ public class Client {
 	 * Error id not bound.
 	 */
 	private static final int ID_NOT_BOUND_ERROR = -60;
-	
+
 	/**
 	 * Error id access.
 	 */
 	private static final int ID_ACCESS_ERROR = -70;
-	
+
 	/**
 	 * Exit id code in case of a cancel operation during the get process.
 	 */
@@ -94,11 +99,10 @@ public class Client {
 	private ServerInterface distantServerStub = null;
 
 	/**
-	 * Main of the program. Takes on or two arguments depending on the command
+	 * Main of the program. Takes one or two arguments depending on the command
 	 * you want to run.
 	 * 
 	 * @param args
-	 * @throws IOException
 	 */
 	public static void main(String[] args) {
 		Client client = new Client(REMOTE_SERVER_IP);
@@ -106,7 +110,9 @@ public class Client {
 		String action = args[0];
 		String filename = "";
 
+		// Catch the command
 		switch (action) {
+		// Do the appropriate choice and do the job
 		case "create":
 			filename = checkFirstArgument(args);
 			client.createFile(filename);
@@ -140,13 +146,16 @@ public class Client {
 			System.out.println("./client syncLocalDir");
 			System.exit(ID_INVALID_ARGUMENT);
 		}
+
+		// Best practice exit success
+		System.exit(EXIT_SUCCESS);
 	}
 
 	/**
 	 * Public constructor to create a client instance.
 	 * 
 	 * @param distantServerHostname
-	 *            : the IP used to connect to the remote server
+	 *            The IP used to connect to the remote server
 	 */
 	public Client(String distantServerHostname) {
 		super();
@@ -173,8 +182,7 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (ServerInterface) registry.lookup("server");
 		} catch (NotBoundException e) {
-			System.err.println("Erreur: Le nom  " + e.getMessage()
-					+ "  n est pas defini dans le registre.");
+			System.err.println("Erreur: Le nom  " + e.getMessage() + "  n est pas defini dans le registre.");
 			System.exit(ID_NOT_BOUND_ERROR);
 		} catch (AccessException e) {
 			System.err.println("Erreur: " + e.getMessage());
@@ -217,8 +225,7 @@ public class Client {
 		try {
 			ArrayList<Header> list = distantServerStub.list();
 			if (list.isEmpty()) {
-				System.out
-						.println("Il n'y a pas encore de fichier dans la liste !");
+				System.out.println("Il n'y a pas encore de fichier dans la liste !");
 			} else {
 				// Display all the element of the list
 				for (Header h : list) {
@@ -248,17 +255,14 @@ public class Client {
 		} catch (NoSuchFileException e) {
 			// Canceled if the file does not exist locally
 			System.out.println("Fichier non detecte en local.");
-			System.out
-					.println("Annulation de l'operation de televersement du fichier \""
-							+ filename + "\".");
+			System.out.println("Annulation de l'operation de televersement du fichier \"" + filename + "\".");
 			System.exit(ID_PUSH_CANCEL);
 		}
 
 		try {
 			// Push the file on the remove server
 			distantServerStub.push(filename, content, clientId);
-			System.out.println("Le fichier \"" + filename
-					+ "\" a bien ete televerse.");
+			System.out.println("Le fichier \"" + filename + "\" a bien ete televerse.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI :" + e.getMessage());
 			System.exit(ID_RMI_ERROR);
@@ -266,8 +270,7 @@ public class Client {
 			System.err.println(ex.getMessage());
 			System.exit(ID_PUSH_CANCEL);
 		} catch (NoSuchFileException er) {
-			System.err
-					.println("Erreur NoSuchFileException :" + er.getMessage());
+			System.err.println("Erreur NoSuchFileException :" + er.getMessage());
 			System.exit(ID_PUSH_CANCEL);
 		}
 	}
@@ -287,12 +290,11 @@ public class Client {
 		try {
 			data = getLocalFile(filename);
 		} catch (NoSuchFileException e) {
-			// Vérification de la présence du fichier local
+			// Verification de la presence du fichier local
 			System.out.println("Fichier non detecte en local.");
 			System.out.println("Telechargement du fichier depuis le server.");
 			try {
-				data = distantServerStub.get(filename, null).getContent()
-						.getContent();
+				data = distantServerStub.get(filename, null).getContent().getContent();
 			} catch (RemoteException re) {
 				System.err.println("Erreur RMI : " + re.getMessage());
 				System.exit(ID_RMI_ERROR);
@@ -307,11 +309,9 @@ public class Client {
 		try {
 			result = distantServerStub.lock(filename, clientId, checksum);
 			if (result != null) {
-				System.out
-						.println("Fichier local different de la version distante.");
+				System.out.println("Fichier local different de la version distante.");
 				storeLocalFile(result);
-				System.out
-						.println("Le fichier local a ete remplace par la version du serveur.");
+				System.out.println("Le fichier local a ete remplace par la version du serveur.");
 			}
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
@@ -323,7 +323,7 @@ public class Client {
 			System.err.println("Erreur IO : " + e.getMessage());
 			System.exit(ID_IO_ERROR);
 		}
-		
+
 		// Inform the user that the file has been locked
 		System.out.println("Fichier \"" + filename + "\" verouille.");
 
@@ -343,8 +343,7 @@ public class Client {
 			file = getLocalFile(filename);
 			checksum = computeChecksum(file);
 		} catch (NoSuchFileException e) {
-			System.out.println("Version locale du fichier \"" + filename
-					+ "\" inexistante.");
+			System.out.println("Version locale du fichier \"" + filename + "\" inexistante.");
 		}
 
 		File result = null;
@@ -352,16 +351,13 @@ public class Client {
 		try {
 			System.out.println("Recuperation de la version du serveur.");
 			result = distantServerStub.get(filename, checksum);
-			System.out.println("Fichier " + result.getHeader().getName()
-					+ " recupere.");
+			System.out.println("Fichier " + result.getHeader().getName() + " recupere.");
 		} catch (RemoteException e) {
 			System.err.println("Erreur RMI : " + e.getMessage());
 			System.exit(ID_RMI_ERROR);
 		} catch (NullPointerException e) {
-			System.err.println("Le fichier " + filename
-					+ " n'existe pas cote serveur.");
-			System.err
-					.println("Executer ./client list pour voir la liste des fichiers disponibles.");
+			System.err.println("Le fichier " + filename + " n'existe pas cote serveur.");
+			System.err.println("Executer ./client list pour voir la liste des fichiers disponibles.");
 			System.exit(ID_GET_CANCEL);
 		}
 
@@ -449,16 +445,14 @@ public class Client {
 			} else {
 				id = new Integer(distantServerStub.generateClientId());
 				storeUserId(id);
-				System.out
-						.println("Demande d'un nouvel id aupres du serveur ...");
+				System.out.println("Demande d'un nouvel id aupres du serveur ...");
 				System.out.println("Vous etes l'utilisateur :" + id);
 			}
 		} catch (FileNotFoundException exception) {
 			try {
 				id = new Integer(distantServerStub.generateClientId());
 				storeUserId(id);
-				System.out
-						.println("Demande d'un nouvel id aupres du serveur ...");
+				System.out.println("Demande d'un nouvel id aupres du serveur ...");
 				System.out.println("Vous etes l'utilisateur :" + id);
 			} catch (RemoteException e) {
 				System.err.println("Remote exception : " + e);
@@ -543,8 +537,7 @@ public class Client {
 	 * @throws IOException
 	 */
 	private void storeLocalFile(File file) throws IOException {
-		FileOutputStream stream = new FileOutputStream(file.getHeader()
-				.getName());
+		FileOutputStream stream = new FileOutputStream(file.getHeader().getName());
 		stream.write(file.getContent().getContent());
 		stream.close();
 	}
