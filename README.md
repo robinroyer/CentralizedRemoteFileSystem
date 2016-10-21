@@ -3,7 +3,7 @@
 This project's goal is to implement a Java centralized file system through RMI.
 Many clients can connect to it and can **create**, **modify**, with an **exclusive lock system**, **list** and **synchronise** files.
 
-> Files are kept in Ram in server side.
+> Files are kept in Ram in the server.
 
 ## RMI Testing
 
