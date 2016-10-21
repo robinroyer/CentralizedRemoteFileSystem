@@ -7,15 +7,19 @@ Many clients can connect to it and can **create**, **modify**, with an **exclusi
 
 ## RMI Testing
 
+> Comparing execution time for **local RMI server** and **Remote RMI server** with different parameter sizes. 
+
+- Go to `Partie1` folder.
 - compile sources : `ant`
 - launch rmiregistry from **./bin** : `cd ../bin && rmiregistry &`
 - launch server : `cd .. && ./server`
 
 ## Using the File System
 
+- Go to `Partie2` folder.
 - To compile `ant`
-- launch rmiregistry : `cd ../bin && rmiregistry &`
-- launch server : `cd .. && ./server`
+- Launch rmiregistry : `cd ../bin && rmiregistry &`
+- Launch server : `cd .. && ./server`
 - How to use client :
 
 ```bash
@@ -27,7 +31,7 @@ Many clients can connect to it and can **create**, **modify**, with an **exclusi
 ./client syncLocalDir # => overide your version
 ```
 
-French report is available at root : **cr.pdf**
+French report is available in **CR** folder : **cr.pdf**
 
 
 ## Author
