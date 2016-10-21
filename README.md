@@ -1,29 +1,36 @@
-INF4410 - Infonuagique 
-Polytechnique Montréal
-Travail Pratique 1  
-Jérémy Wimsingues - 1860682
-Robin Royer - 1860715
+# Centralized Remote File System
 
-## Partie 1
+This project's goal is to implement a Java centralized file system through RMI.
+Many clients can connect to it and can **create**, **modify**, with a _lock system_, **list** and **synchronise** files.
 
-- compiler les sources : `ant`
-- lancer rmiregistry depuis les bin : `cd ../bin && rmiregistry &`
-- lancer le server : `cd .. && ./server`
+> Files are kept in Ram in server side.
 
-## Partie 2
+## RMI Testing
 
-- compiler `ant`
-- lancer rmiregistry : `cd ../bin && rmiregistry &`
-- lancer le server : `cd .. && ./server`
-- utiliser le client :
-```
-./client create file
-./client list
-./client lock file
+- compile sources : `ant`
+- launch rmiregistry from ./bin : `cd ../bin && rmiregistry &`
+- launch server : `cd .. && ./server`
+
+## Using the File System
+
+- To compile `ant`
+- launch rmiregistry : `cd ../bin && rmiregistry &`
+- launch server : `cd .. && ./server`
+- How to use client :
+
+```bash
+./client create file # will fail if an other file has the same name on the server
+./client list 
+./client lock file # => will get file if you don't have it locally
 ./client get file
-./client push file
-./client syncLocalDir
+./client push file # => need to be locked before
+./client syncLocalDir # => overide your version
 ```
 
-Les détails de choix de conception est les résultats des tests sont disponibles
-dans le rapport de TP situé à la racine de l'archive : cr.pdf
+French report is available at root : **cr.pdf**
+
+
+## Author
+
+[Jérémy Wimsingues](https://github.com/JWimsingues/infonuagique-tp2)
+[Robin Royer](https://github.com/robinroyer)
